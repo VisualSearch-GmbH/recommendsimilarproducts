@@ -27,8 +27,4 @@
 		<a href="https://github.com/VisualSearch-GmbH/recommendsimilarproducts" target="_blank">{l s='documentation and source code.' mod='recommendsimilarproducts'}</a>
 	</p>
 
-	<!-- <p><a target="_blank" href="{$status_cross_link}">{$status_cross_link}</a></p> -->
-	<!-- <p><a target="_blank" href="{$update_cross_link}">{$update_cross_link}</a></p> -->
-	<!-- <p><a target="_blank" href="{$update_one_category_auto_link}">{$update_one_category_auto_link}</a></p> -->
-
 </div>
