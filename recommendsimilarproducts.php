@@ -349,6 +349,7 @@ class RecommendSimilarProducts extends Module
                     ),
                     array(
                         'type' => 'html',
+                        'name' => 'RECOMMEND_SIMILAR_PRODUCTS_GET_CREDENTIALS_LINK',
                         'html_content' =>
                             '<a href="https://www.visualsearch.at/index.php/credentials/" target="_blank">'.
                                 $this->l('Please click here to get your API credentials').
