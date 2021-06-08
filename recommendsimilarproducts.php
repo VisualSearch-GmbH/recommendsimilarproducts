@@ -53,6 +53,7 @@ class RecommendSimilarProducts extends Module
         include(dirname(__FILE__).'/sql/install.php');
 
         Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE', false);
+        Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_API_KEY', '');
 
         $host = Context::getContext()->shop->getBaseURL(true);
 
@@ -84,6 +85,7 @@ class RecommendSimilarProducts extends Module
         include(dirname(__FILE__).'/sql/uninstall.php');
 
         Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE');
+        Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_API_KEY');
 
         $this->deleteRelated();
 
@@ -263,7 +265,15 @@ class RecommendSimilarProducts extends Module
     protected function getConfigFormValues()
     {
         return array(
-            'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE' => Configuration::get('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE', true),
+            'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE' => Tools::getValue(
+                'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE',
+                Configuration::get(
+                    'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE',
+                    null,
+                    null,
+                    $this->context->shop->id
+                )
+            ),
         );
     }
     
@@ -272,11 +282,17 @@ class RecommendSimilarProducts extends Module
      */
     protected function postProcess()
     {
-        $form_values = $this->getConfigFormValues();
-
-        foreach (array_keys($form_values) as $key) {
-            Configuration::updateValue($key, Tools::getValue($key));
+        foreach (array_keys($this->getConfigFormValues()) as $key) {
+            Configuration::updateValue(
+                $key,
+                Tools::getValue($key),
+                false,
+                null,
+                $this->context->shop->id
+            );
         }
+
+        $this->redirectWithConfirmation();
     }
 
     /**

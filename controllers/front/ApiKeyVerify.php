@@ -27,12 +27,7 @@ class RecommendSimilarProductsApiKeyVerifyModuleFrontController extends Recommen
             die("Authorization failed");
         }
 
-        $apiKey = Configuration::get(
-            'RECOMMEND_SIMILAR_PRODUCTS_API_KEY',
-            null,
-            null,
-            $this->context->shop->id
-        );
+        $apiKey = $this->getApiKey();
 
         if (is_string($apiKey) && trim($apiKey)) {
             $handle = curl_init();

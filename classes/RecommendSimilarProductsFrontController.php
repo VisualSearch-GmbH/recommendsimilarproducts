@@ -10,6 +10,9 @@
 
 class RecommendSimilarProductsFrontController extends ModuleFrontController
 {
+    /**
+     * @return bool
+     */
     protected function checkAuthorization()
     {
         $keys = Db::getInstance()->ExecuteS('SELECT * FROM ' . _DB_PREFIX_ . 'recommend_similar_products' . ' LIMIT 1');
@@ -23,6 +26,9 @@ class RecommendSimilarProductsFrontController extends ModuleFrontController
         return false;
     }
     
+    /**
+     * @return string|null
+     */
     protected function getBearerToken()
     {
         $headers = $this->getAuthorizationHeader();
@@ -35,6 +41,9 @@ class RecommendSimilarProductsFrontController extends ModuleFrontController
         return null;
     }
     
+    /**
+     * @return string|null
+     */
     protected function getAuthorizationHeader()
     {
         $headers = null;
@@ -54,10 +63,26 @@ class RecommendSimilarProductsFrontController extends ModuleFrontController
         return $headers;
     }
 
+    /**
+     * @return bool
+     */
     protected function isLiveMode()
     {
         return (bool)Configuration::get(
             'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE',
+            null,
+            null,
+            $this->context->shop->id
+        );
+    }
+
+    /**
+     * @return string
+     */
+    protected function getApiKey()
+    {
+        return (string)Configuration::get(
+            'RECOMMEND_SIMILAR_PRODUCTS_API_KEY',
             null,
             null,
             $this->context->shop->id

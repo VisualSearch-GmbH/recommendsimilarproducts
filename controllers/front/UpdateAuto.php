@@ -121,19 +121,11 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         // hosts
         $systemHosts = Context::getContext()->shop->getBaseURL(true);
 
-        // get api key
-        $apiKey = Configuration::get(
-            'RECOMMEND_SIMILAR_PRODUCTS_API_KEY',
-            null,
-            null,
-            $this->context->shop->id
-        );
-
         // Setting our options
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
-            'Vis-API-KEY:'.$apiKey,
+            'Vis-API-KEY:'.$this->getApiKey(),
             'Vis-SYSTEM-HOSTS:'.$systemHosts,
             'Vis-SYSTEM-TYPE:prestashop'));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
