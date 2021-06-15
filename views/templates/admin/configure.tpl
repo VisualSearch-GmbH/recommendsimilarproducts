@@ -23,8 +23,7 @@
 	</p>
 	<br />
 	<p>
-		{l s='You can find here ' mod='recommendsimilarproducts'}
-		<a href="https://github.com/VisualSearch-GmbH/recommendsimilarproducts" target="_blank">{l s='documentation and source code.' mod='recommendsimilarproducts'}</a>
+		{l s='You can find here [1]documentation[/1] and [2]source code[/2].' tags=['<a href="https://www.visualsearch.at/prestashop/readme_en.pdf" target="_blank">', '<a href="https://github.com/VisualSearch-GmbH/recommendsimilarproducts" target="_blank">'] mod='recommendsimilarproducts'}
 	</p>
 
 </div>
