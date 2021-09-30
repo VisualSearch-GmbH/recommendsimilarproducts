@@ -70,7 +70,7 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                         $image['id_image'],
                         ImageType::{_RSP_PS16_ ? 'getFormatedName' : 'getFormattedName'}('home')
                     );
-                    array_push($products_list, [$product_ID, $product_name, $product_category, $product_image]);
+                    array_push($products_list, [$product_ID, $product_name, $product_category, '', $product_image]);
                 }
             }
         } else {
