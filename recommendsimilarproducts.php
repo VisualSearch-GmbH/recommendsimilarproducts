@@ -52,8 +52,9 @@ class RecommendSimilarProducts extends Module
     {
         include(dirname(__FILE__).'/sql/install.php');
 
-        Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE', false);
         Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_API_KEY', '');
+        Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE', false);
+        Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_VERSION', $this->version);
 
         $host = Context::getContext()->shop->getBaseURL(true);
 
@@ -71,6 +72,7 @@ class RecommendSimilarProducts extends Module
             $this->registerHook('apiKeyVerify') &&
             $this->registerHook('deleteCross') &&
             $this->registerHook('statusCross') &&
+            $this->registerHook('statusVersion') &&
             $this->registerHook('updateCross') &&
             $this->registerHook('updateAuto') &&
             $this->registerHook('updateCategories') &&
@@ -84,8 +86,9 @@ class RecommendSimilarProducts extends Module
     {
         include(dirname(__FILE__).'/sql/uninstall.php');
 
-        Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE');
         Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_API_KEY');
+        Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE');
+        Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_VERSION');
 
         $this->deleteRelated();
 
@@ -139,6 +142,11 @@ class RecommendSimilarProducts extends Module
             'StatusCross'
         );
 
+        $status_version_link = $this->context->link->getModuleLink(
+            'recommendsimilarproducts',
+            'StatusVersion'
+        );
+
         $update_cross_link = $this->context->link->getModuleLink(
             'recommendsimilarproducts',
             'UpdateCross'
@@ -172,6 +180,7 @@ class RecommendSimilarProducts extends Module
         $this->context->smarty->assign('api_key_verify', $api_key_verify);
         $this->context->smarty->assign('delete_cross_link', $delete_cross_link);
         $this->context->smarty->assign('status_cross_link', $status_cross_link);
+        $this->context->smarty->assign('status_version_link', $status_version_link);
         $this->context->smarty->assign('update_cross_link', $update_cross_link);
         $this->context->smarty->assign('update_auto_link', $update_auto_link);
         $this->context->smarty->assign('update_categories_link', $update_categories_link);
@@ -559,6 +568,25 @@ class RecommendSimilarProducts extends Module
             'module-'.$this->name.'-status_cross' => array(
                 'controller' => 'StatusCross',
                 'rule' => 'StatusCross',
+                'keywords' => array(),
+                'params' => array(
+                    'fc' => 'module',
+                    'module' => $this->name,
+                ),
+            ),
+        );
+    }
+
+    /**
+     * Status version endpoint
+     */
+    public function hookStatusVersionRoutes()
+    {
+        return array(
+
+            'module-'.$this->name.'-status_version' => array(
+                'controller' => 'StatusVersion',
+                'rule' => 'StatusVersion',
                 'keywords' => array(),
                 'params' => array(
                     'fc' => 'module',

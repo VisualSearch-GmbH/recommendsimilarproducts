@@ -88,4 +88,17 @@ class RecommendSimilarProductsFrontController extends ModuleFrontController
             $this->context->shop->id
         );
     }
+
+    /**
+     * @return string
+     */
+    protected function getVersion()
+    {
+        return (string)Configuration::get(
+            'RECOMMEND_SIMILAR_PRODUCTS_VERSION',
+            null,
+            null,
+            $this->context->shop->id
+        );
+    }
 }
