@@ -14,6 +14,9 @@ if (!defined('_PS_VERSION_')) {
 
 define('_RSP_PS16_', version_compare(_PS_VERSION_, '1.7', '<'));
 
+require_once dirname(__FILE__) . '/classes/Click.php';
+require_once dirname(__FILE__) . '/classes/View.php';
+
 class RecommendSimilarProducts extends Module
 {
     protected $config_form = false;
@@ -27,7 +30,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '1.0.6';
+        $this->version = '1.0.7';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -516,8 +519,68 @@ class RecommendSimilarProducts extends Module
      */
     public function hookHeader()
     {
-        $this->context->controller->addJS($this->_path.'/views/js/front.js');
-        $this->context->controller->addCSS($this->_path.'/views/css/front.css');
+        if (Dispatcher::getInstance()->getController() === 'product') {
+            if (Tools::isSubmit('rsp')) {
+                $view = new RecommendSimilarProducts\PrestaShop\View();
+                $view->id_product = (int)Tools::getValue('id_product');
+                $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
+                $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $view->date = date('Y-m-d H:i:s');
+                
+                if (!$view->save()) {
+                    PrestaShopLogger::addLog(
+                        'RecommendSimilarProducts::hookHeader - Failed to save click object',
+                        3,
+                        null,
+                        null,
+                        null,
+                        true
+                    );
+                }
+            }
+
+            if (_RSP_PS16_) {
+                
+            } else {
+                require_once dirname(__FILE__) . '/classes/ProductLazyArray.php';
+                
+                /** @var ProductController $controller */
+                $controller = $this->context->controller;
+                /** @var Product $product */
+                $product = $controller->getProduct();
+
+                $presentationSettings = (new ProductPresenterFactory(
+                    $this->context,
+                    new TaxConfiguration()
+                ))->getPresentationSettings();
+                
+                if (is_array($accessories = $product->getAccessories($this->context->language->id))) {
+                    foreach ($accessories as &$accessory) {
+                        $accessory = new RecommendSimilarProducts\PrestaShop\ProductLazyArray(
+                            $presentationSettings,
+                            Product::getProductProperties($this->context->language->id, $accessory, $this->context),
+                            $this->context->language,
+                            $this->context->link,
+                            $this->getTranslator()
+                        );
+                    }
+
+                    unset($accessory);
+                }
+
+                $this->context->smarty->assign('accessories', $accessories);
+            }
+
+            $this->context->controller->addJS($this->_path.'/views/js/front.js');
+            $this->context->controller->addCSS($this->_path.'/views/css/front.css');
+
+            Media::addJsDef(array(
+                $this->name => array(
+                    'ajax_url' => preg_replace('/\/$/', '', $this->context->link->getBaseLink()) .
+                        '/modules/' . $this->name . '/' . $this->name . '-ajax.php'
+                )
+            ));
+        }
     }
 
     /**
@@ -704,6 +767,50 @@ class RecommendSimilarProducts extends Module
             }
 
             $product->deleteAccessories();
+        }
+    }
+
+    public function processAjaxCall()
+    {
+        switch (Tools::getValue('action')) {
+            case 'click':
+                $click = new RecommendSimilarProducts\PrestaShop\Click();
+                $click->id_product = (int)Tools::getValue('id_product');
+                $click->id_product_attribute = (int)Tools::getValue('id_product_attribute');
+                $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $click->date = date('Y-m-d H:i:s');
+                if (!$click->save()) {
+                    PrestaShopLogger::addLog(
+                        'RecommendSimilarProducts::processAjaxCall - Failed to save click object',
+                        3,
+                        null,
+                        null,
+                        null,
+                        true
+                    );
+                }
+                break;
+
+            case 'view':
+                $view = new RecommendSimilarProducts\PrestaShop\View();
+                $view->id_product = (int)Tools::getValue('id_product');
+                $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
+                $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $view->date = date('Y-m-d H:i:s');
+                if (!$view->save()) {
+                    PrestaShopLogger::addLog(
+                        'RecommendSimilarProducts::processAjaxCall - Failed to save view object',
+                        3,
+                        null,
+                        null,
+                        null,
+                        true
+                    );
+                }
+                break;
+
+            default:
+                exit;
         }
     }
 }

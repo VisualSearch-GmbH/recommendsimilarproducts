@@ -16,6 +16,8 @@
 $sql = array();
 
 $sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'recommend_similar_products;';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'recommend_similar_products_clicks;';
+$sql[] = 'DROP TABLE IF EXISTS ' . _DB_PREFIX_ . 'recommend_similar_products_views;';
 
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
