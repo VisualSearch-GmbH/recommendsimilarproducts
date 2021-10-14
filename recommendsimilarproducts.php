@@ -592,7 +592,8 @@ class RecommendSimilarProducts extends Module
      */
     public function hookDisplayProductPriceBlock($params)
     {
-        if (!isset($params['type']) ||
+        if ((Dispatcher::getInstance()->getController() !== 'product') ||
+            !isset($params['type']) ||
             ($params['type'] !== 'after_price') ||
             !isset($params['product']) ||
             !is_array($params['product'])) {
