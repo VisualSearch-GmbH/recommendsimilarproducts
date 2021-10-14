@@ -23,8 +23,8 @@ class RecommendSimilarProductsStatsClicksModuleFrontController extends Recommend
         }
 
         $dateFrom = date('Y-m-d', strtotime('-6 months'));
-        $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom);
-        $tmpViews = RecommendSimilarProductsView::getViews($dateFrom);
+        $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
+        $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $clicks = $views = array();
         
         foreach ($tmpClicks as $click) {
@@ -53,13 +53,13 @@ class RecommendSimilarProductsStatsClicksModuleFrontController extends Recommend
             
             $views[$view['date']][] = array(
                 'url' => $this->context->link->getProductLink(
-                    (int)$click['id_product'],
+                    (int)$view['id_product'],
                     null,
                     null,
                     null,
                     null,
                     null,
-                    (int)$click['id_product_attribute']
+                    (int)$view['id_product_attribute']
                 ),
                 'id_customer' => $view['id_customer'],
             );

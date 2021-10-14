@@ -46,17 +46,24 @@ class RecommendSimilarProductsClick extends ObjectModel
 
     /**
      * @param string $dateFrom
+     * @param bool $forActiveProductsOnly
      *
      * @return array
      */
-    public static function getClicks($dateFrom = null)
+    public static function getClicks($dateFrom = null, $forActiveProductsOnly = false)
     {
         $query = (new DbQuery())
-            ->select('*')
-            ->from('recommend_similar_products_clicks', 'c');
+            ->select('c.*')
+            ->from('recommend_similar_products_clicks', 'c')
+            ->innerJoin('product_shop', 'ps', 'ps.id_product = c.id_product AND ps.id_shop = ' .
+                Context::getContext()->shop->id);
 
         if ($dateFrom) {
             $query->where('c.date >= ' . $dateFrom);
+        }
+
+        if ($forActiveProductsOnly) {
+            $query->where('ps.active = 1');
         }
 
         if (is_array($result = Db::getInstance()->executeS($query))) {

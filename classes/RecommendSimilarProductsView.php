@@ -46,17 +46,24 @@ class RecommendSimilarProductsView extends ObjectModel
 
     /**
      * @param string $dateFrom
+     * @param bool $forActiveProductsOnly
      *
      * @return array
      */
-    public static function getViews($dateFrom = null)
+    public static function getViews($dateFrom = null, $forActiveProductsOnly = false)
     {
         $query = (new DbQuery())
-            ->select('*')
-            ->from('recommend_similar_products_views', 'v');
+            ->select('v.*')
+            ->from('recommend_similar_products_views', 'v')
+            ->innerJoin('product_shop', 'ps', 'ps.id_product = v.id_product AND ps.id_shop = ' .
+                Context::getContext()->shop->id);
 
         if ($dateFrom) {
             $query->where('v.date >= ' . $dateFrom);
+        }
+
+        if ($forActiveProductsOnly) {
+            $query->where('ps.active = 1');
         }
 
         if (is_array($result = Db::getInstance()->executeS($query))) {
