@@ -23,6 +23,8 @@ if (!defined('_PS_VERSION_')) {
  */
 function upgrade_module_1_0_7($module)
 {
+    $ps16 = version_compare(_PS_VERSION_, '1.7', '<');
+
     return Db::getInstance()->execute('
         CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_products_clicks` (
             `id_recommend_similar_products_clicks` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -41,5 +43,5 @@ function upgrade_module_1_0_7($module)
             `date` DATETIME NOT NULL,
             PRIMARY KEY (`id_recommend_similar_products_views`)
         ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;
-    ');
+    ') && (!$ps16 || $ps16 && $module->registerHook('displayProductPriceBlock'));
 }

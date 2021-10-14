@@ -9,8 +9,8 @@
  */
 
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontController.php';
-require_once dirname(__FILE__).'/../../classes/Click.php';
-require_once dirname(__FILE__).'/../../classes/View.php';
+require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsClick.php';
+require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsView.php';
 
 class RecommendSimilarProductsStatsClicksModuleFrontController extends RecommendSimilarProductsFrontController
 {
@@ -23,8 +23,8 @@ class RecommendSimilarProductsStatsClicksModuleFrontController extends Recommend
         }
 
         $dateFrom = date('Y-m-d', strtotime('-6 months'));
-        $tmpClicks = RecommendSimilarProducts\PrestaShop\Click::getClicks($dateFrom);
-        $tmpViews = RecommendSimilarProducts\PrestaShop\View::getViews($dateFrom);
+        $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom);
+        $tmpViews = RecommendSimilarProductsView::getViews($dateFrom);
         $clicks = $views = array();
         
         foreach ($tmpClicks as $click) {

@@ -14,8 +14,8 @@ if (!defined('_PS_VERSION_')) {
 
 define('_RSP_PS16_', version_compare(_PS_VERSION_, '1.7', '<'));
 
-require_once dirname(__FILE__) . '/classes/Click.php';
-require_once dirname(__FILE__) . '/classes/View.php';
+require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsClick.php';
+require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsView.php';
 
 class RecommendSimilarProducts extends Module
 {
@@ -79,7 +79,8 @@ class RecommendSimilarProducts extends Module
             $this->registerHook('updateCross') &&
             $this->registerHook('updateAuto') &&
             $this->registerHook('updateCategories') &&
-            $this->registerHook('updateOneCategory');
+            $this->registerHook('updateOneCategory') &&
+            (!_RSP_PS16_ || _RSP_PS16_ && $this->registerHook('displayProductPriceBlock'));
     }
 
     /**
@@ -521,7 +522,7 @@ class RecommendSimilarProducts extends Module
     {
         if (Dispatcher::getInstance()->getController() === 'product') {
             if (Tools::isSubmit('rsp')) {
-                $view = new RecommendSimilarProducts\PrestaShop\View();
+                $view = new RecommendSimilarProductsView();
                 $view->id_product = (int)Tools::getValue('id_product');
                 $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
                 $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
@@ -540,21 +541,21 @@ class RecommendSimilarProducts extends Module
             }
 
             if (_RSP_PS16_) {
-                
+                $this->context->controller->addJS($this->_path.'/views/js/front16.js');
             } else {
-                require_once dirname(__FILE__) . '/classes/ProductLazyArray.php';
-                
                 /** @var ProductController $controller */
                 $controller = $this->context->controller;
                 /** @var Product $product */
                 $product = $controller->getProduct();
 
-                $presentationSettings = (new ProductPresenterFactory(
-                    $this->context,
-                    new TaxConfiguration()
-                ))->getPresentationSettings();
-                
                 if (is_array($accessories = $product->getAccessories($this->context->language->id))) {
+                    require_once dirname(__FILE__) . '/classes/ProductLazyArray.php';
+
+                    $presentationSettings = (new ProductPresenterFactory(
+                        $this->context,
+                        new TaxConfiguration()
+                    ))->getPresentationSettings();
+
                     foreach ($accessories as &$accessory) {
                         $accessory = new RecommendSimilarProducts\PrestaShop\ProductLazyArray(
                             $presentationSettings,
@@ -566,12 +567,13 @@ class RecommendSimilarProducts extends Module
                     }
 
                     unset($accessory);
+
+                    $this->context->smarty->assign('accessories', $accessories);
                 }
 
-                $this->context->smarty->assign('accessories', $accessories);
+                $this->context->controller->addJS($this->_path.'/views/js/front.js');
             }
 
-            $this->context->controller->addJS($this->_path.'/views/js/front.js');
             $this->context->controller->addCSS($this->_path.'/views/css/front.css');
 
             Media::addJsDef(array(
@@ -581,6 +583,27 @@ class RecommendSimilarProducts extends Module
                 )
             ));
         }
+    }
+
+    /**
+     * @param mixed $params
+     *
+     * @return mixed
+     */
+    public function hookDisplayProductPriceBlock($params)
+    {
+        if (!isset($params['type']) ||
+            ($params['type'] !== 'after_price') ||
+            !isset($params['product']) ||
+            !is_array($params['product'])) {
+            return;
+        }
+
+        ($template = $this->context->smarty->createTemplate(
+            $this->local_path . 'views/templates/hook/product-price-block.tpl'
+        ))->assign('product', $params['product']);
+
+        return $template->fetch();
     }
 
     /**
@@ -774,7 +797,7 @@ class RecommendSimilarProducts extends Module
     {
         switch (Tools::getValue('action')) {
             case 'click':
-                $click = new RecommendSimilarProducts\PrestaShop\Click();
+                $click = new RecommendSimilarProductsClick();
                 $click->id_product = (int)Tools::getValue('id_product');
                 $click->id_product_attribute = (int)Tools::getValue('id_product_attribute');
                 $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
@@ -792,7 +815,7 @@ class RecommendSimilarProducts extends Module
                 break;
 
             case 'view':
-                $view = new RecommendSimilarProducts\PrestaShop\View();
+                $view = new RecommendSimilarProductsView();
                 $view->id_product = (int)Tools::getValue('id_product');
                 $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
                 $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;

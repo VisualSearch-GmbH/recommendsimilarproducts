@@ -8,9 +8,7 @@
  * @license MIT License
  */
 
-namespace RecommendSimilarProducts\PrestaShop;
-
-class View extends \ObjectModel
+class RecommendSimilarProductsClick extends ObjectModel
 {
     /**
      * @var int
@@ -36,8 +34,8 @@ class View extends \ObjectModel
      * @var array
      */
     public static $definition = array(
-        'table' => 'recommend_similar_products_views',
-        'primary' => 'id_recommend_similar_products_views',
+        'table' => 'recommend_similar_products_clicks',
+        'primary' => 'id_recommend_similar_products_clicks',
         'fields' => array(
             'id_product' => array('type' => self::TYPE_INT, 'required' => true),
             'id_product_attribute' => array('type' => self::TYPE_INT, 'required' => true),
@@ -51,17 +49,17 @@ class View extends \ObjectModel
      *
      * @return array
      */
-    public static function getViews($dateFrom = null)
+    public static function getClicks($dateFrom = null)
     {
-        $query = (new \DbQuery())
+        $query = (new DbQuery())
             ->select('*')
-            ->from('recommend_similar_products_views', 'v');
+            ->from('recommend_similar_products_clicks', 'c');
 
         if ($dateFrom) {
-            $query->where('v.date >= ' . $dateFrom);
+            $query->where('c.date >= ' . $dateFrom);
         }
 
-        if (is_array($result = \Db::getInstance()->executeS($query))) {
+        if (is_array($result = Db::getInstance()->executeS($query))) {
             return $result;
         }
 
