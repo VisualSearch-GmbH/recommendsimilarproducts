@@ -30,7 +30,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '1.0.7';
+        $this->version = '2.0.0';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -74,6 +74,7 @@ class RecommendSimilarProducts extends Module
             $this->registerHook('backOfficeHeader') &&
             $this->registerHook('apiKeyVerify') &&
             $this->registerHook('deleteCross') &&
+            $this->registerHook('statusClicks') &&
             $this->registerHook('statusCross') &&
             $this->registerHook('statusVersion') &&
             $this->registerHook('updateCross') &&
@@ -141,6 +142,11 @@ class RecommendSimilarProducts extends Module
             'DeleteCross'
         );
 
+        $status_clicks_link = $this->context->link->getModuleLink(
+            'recommendsimilarproducts',
+            'StatusClicks'
+        );
+
         $status_cross_link = $this->context->link->getModuleLink(
             'recommendsimilarproducts',
             'StatusCross'
@@ -183,6 +189,7 @@ class RecommendSimilarProducts extends Module
         $this->context->smarty->assign('module_dir', $this->_path);
         $this->context->smarty->assign('api_key_verify', $api_key_verify);
         $this->context->smarty->assign('delete_cross_link', $delete_cross_link);
+        $this->context->smarty->assign('status_clicks_link', $status_clicks_link);
         $this->context->smarty->assign('status_cross_link', $status_cross_link);
         $this->context->smarty->assign('status_version_link', $status_version_link);
         $this->context->smarty->assign('update_cross_link', $update_cross_link);
@@ -636,6 +643,25 @@ class RecommendSimilarProducts extends Module
             'module-'.$this->name.'-delete_cross' => array(
                 'controller' => 'DeleteCross',
                 'rule' => 'DeleteCross',
+                'keywords' => array(),
+                'params' => array(
+                    'fc' => 'module',
+                    'module' => $this->name,
+                ),
+            ),
+        );
+    }
+
+    /**
+     * Status clicks endpoint
+     */
+    public function hookStatusClicksRoutes()
+    {
+        return array(
+
+            'module-'.$this->name.'-status_clicks' => array(
+                'controller' => 'StatusClicks',
+                'rule' => 'StatusClicks',
                 'keywords' => array(),
                 'params' => array(
                     'fc' => 'module',

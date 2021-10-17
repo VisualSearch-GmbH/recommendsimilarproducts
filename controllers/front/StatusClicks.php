@@ -12,7 +12,7 @@ require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontCont
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsClick.php';
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsView.php';
 
-class RecommendSimilarProductsStatsClicksModuleFrontController extends RecommendSimilarProductsFrontController
+class RecommendSimilarProductsStatusClicksModuleFrontController extends RecommendSimilarProductsFrontController
 {
     public function initContent()
     {
@@ -22,7 +22,7 @@ class RecommendSimilarProductsStatsClicksModuleFrontController extends Recommend
             die("Authorization failed");
         }
 
-        $dateFrom = date('Y-m-d', strtotime('-6 months'));
+        $dateFrom = date('Y-m-d', strtotime('-1 months'));
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $clicks = $views = array();
