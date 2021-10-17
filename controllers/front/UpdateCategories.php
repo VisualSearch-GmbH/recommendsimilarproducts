@@ -23,11 +23,13 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
-        if (!$this->isLiveMode()) {
+        if (!$this->isLiveMode())
+        {
             die("Not in live mode");
         }
 
@@ -40,8 +42,16 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
         // Prepare the products for curl request
         //
         $products_list = array();
-        if (!empty($products)) {
-            foreach ($products as $key => $prod) {
+        if (!empty($products))
+        {
+            foreach ($products as $key => $prod)
+            {
+                // check if product is active
+                if($prod['active'] != 1)
+                {
+                    continue;
+                }
+
                 // Get cover image for your product
                 $image = Image::getCover($prod['id_product']);
                 // Load Product Object
@@ -52,8 +62,10 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                 $categories = Product::getProductCategoriesFull($prod['id_product']);
 
                 $category_list = array();
-                if (!empty($categories)) {
-                    foreach ($categories as $cat) {
+                if (!empty($categories))
+                {
+                    foreach ($categories as $cat)
+                    {
                         $category_list[] = $cat['name'];
                     }
                 }
@@ -63,7 +75,8 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                 $product_category = $category_list;
 
                 // Only products with valid images
-                if ($image['id_image'] > 0) {
+                if ($image['id_image'] > 0)
+                {
                     $image_name = $product->link_rewrite[Context::getContext()->language->id];
                     $product_image = $link->getImageLink(
                         $image_name,
@@ -73,7 +86,9 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                     array_push($products_list, [$product_ID, $product_name, $product_category, '', $product_image]);
                 }
             }
-        } else {
+        }
+        else
+        {
             die("No products found");
         }
 

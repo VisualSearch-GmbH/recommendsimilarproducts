@@ -22,25 +22,30 @@ class RecommendSimilarProductsUpdateCrossModuleFrontController extends Recommend
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
-        if (!$this->isLiveMode()) {
+        if (!$this->isLiveMode())
+        {
             die("Not in live mode");
         }
 
         $data = json_decode(Tools::file_get_contents('php://input'), true);
         if (!is_array($data) ||
             !isset($data['products']) ||
-            !is_array($data['products'])) {
+            !is_array($data['products']))
+        {
             return;
         }
         
-        foreach ($data['products'] as $productId => $relatedProducts) {
+        foreach ($data['products'] as $productId => $relatedProducts)
+        {
             if (!is_array($relatedProducts) ||
                 !count($relatedProducts) ||
-                !Validate::isLoadedObject($product = new Product((int)$productId))) {
+                !Validate::isLoadedObject($product = new Product((int)$productId)))
+            {
                 continue;
             }
             

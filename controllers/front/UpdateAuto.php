@@ -23,11 +23,13 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
-        if (!$this->isLiveMode()) {
+        if (!$this->isLiveMode())
+        {
             die("Not in live mode");
         }
 
@@ -37,18 +39,21 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
 
         $category_ID = -1;
-        if (!empty($products)) {
+        if (!empty($products))
+        {
             $category_ID = getFirstCategory($products);
         }
 
         //echo "<pre>"; print_r($category_ID); die(" exit...");
 
         // related products exist for every product -> no update needed
-        if ($category_ID == -1) {
+        if ($category_ID == -1)
+        {
             die("All products have related products");
         }
 
-        if (sizeof($products) > 10000) {
+        if (sizeof($products) > 10000)
+        {
             //
             // Update only this category -> Find products in this category
             //
@@ -67,8 +72,16 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         // Prepare the products for curl request
         //
         $products_list = array();
-        if (!empty($products)) {
-            foreach ($products as $key => $prod) {
+        if (!empty($products))
+        {
+            foreach ($products as $key => $prod)
+            {
+                // check if product is active
+                if($prod['active'] != 1)
+                {
+                    continue;
+                }
+
                 // Get cover image for your product
                 $image = Image::getCover($prod['id_product']);
                 // Load Product Object
@@ -79,8 +92,11 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
                 $categories = Product::getProductCategoriesFull($prod['id_product']);
 
                 $category_list = array();
-                if (!empty($categories)) {
-                    foreach ($categories as $cat) {
+
+                if (!empty($categories))
+                {
+                    foreach ($categories as $cat)
+                    {
                         $category_list[] = $cat['name'];
                     }
                 }
@@ -90,7 +106,8 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
                 $product_category = $category_list;
 
                 // Only products with valid images
-                if ($image['id_image'] > 0) {
+                if ($image['id_image'] > 0)
+                {
                     $image_name = $product->link_rewrite[Context::getContext()->language->id];
                     $product_image = $link->getImageLink(
                         $image_name,
@@ -100,7 +117,9 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
                     array_push($products_list, [$product_ID, $product_name, $product_category, '', $product_image]);
                 }
             }
-        } else {
+        }
+        else
+        {
             die("No products found");
         }
 

@@ -33,8 +33,10 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_produ
     PRIMARY KEY (`id_recommend_similar_products_views`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
-foreach ($sql as $query) {
-    if (Db::getInstance()->execute($query) == false) {
+foreach ($sql as $query)
+{
+    if (Db::getInstance()->execute($query) == false)
+    {
         return false;
     }
 }

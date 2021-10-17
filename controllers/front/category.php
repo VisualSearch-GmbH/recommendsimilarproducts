@@ -10,7 +10,17 @@
 
 function getFirstCategory($products): int
 {
-    foreach ($products as $key => $prod) {
+    $category_ID = -1;
+
+    foreach ($products as $key => $prod)
+    {
+
+        // check if product is active
+        if($prod['active'] != 1)
+        {
+            continue;
+        }
+
         // Get cover image for your product
         $image = Image::getCover($prod['id_product']);
 
@@ -18,7 +28,9 @@ function getFirstCategory($products): int
         $categories = Product::getProductCategoriesFull($prod['id_product']);
 
         // product must an image and child category(ies). products only with root category are not admitted.
-        if ($image['id_image'] > 0 && count($categories) > 1) {
+        if ($image['id_image'] > 0 && count($categories) > 1)
+        {
+
             $last_category = end($categories);
             $category_ID = $last_category['id_category'];
 
@@ -27,9 +39,12 @@ function getFirstCategory($products): int
                 FROM ' . _DB_PREFIX_ . 'accessory
                 WHERE `id_product_1` = ' . $prod['id_product']);
 
-            if (empty($related)) {
+            if (empty($related))
+            {
                 break;
-            } else {
+            }
+            else
+            {
                 $category_ID = -1;
             }
         }

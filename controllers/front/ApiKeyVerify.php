@@ -23,13 +23,15 @@ class RecommendSimilarProductsApiKeyVerifyModuleFrontController extends Recommen
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
         $apiKey = $this->getApiKey();
 
-        if (is_string($apiKey) && trim($apiKey)) {
+        if (is_string($apiKey) && trim($apiKey))
+        {
             $handle = curl_init();
             $httpHeader = array(
                 'Vis-API-KEY: '.$apiKey,
@@ -44,11 +46,13 @@ class RecommendSimilarProductsApiKeyVerifyModuleFrontController extends Recommen
 
             curl_close($handle);
 
-            if (($result === false) || !is_array($data = json_decode($result, true))) {
+            if (($result === false) || !is_array($data = json_decode($result, true)))
+            {
                 die(json_encode(['success' => false]));
             }
 
-            if (isset($data['code']) && ((int)$data['code'] === 200)) {
+            if (isset($data['code']) && ((int)$data['code'] === 200))
+            {
                 die(json_encode(['success' => true]));
             }
         }

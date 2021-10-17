@@ -22,14 +22,18 @@ class RecommendSimilarProductsDeleteCrossModuleFrontController extends Recommend
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
         $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
 
-        foreach ($products as $key => $prod) {
-            if (!Validate::isLoadedObject($product = new Product((int)$key))) {
+        foreach ($products as $key => $prod)
+        {
+
+            if (!Validate::isLoadedObject($product = new Product((int)$key)))
+            {
                 continue;
             }
 

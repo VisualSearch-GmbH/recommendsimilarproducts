@@ -180,9 +180,12 @@ class RecommendSimilarProducts extends Module
         /**
          * If values have been submitted in the form, process.
          */
-        if (((bool)Tools::isSubmit('submitRecommend_similar_productsModule')) == true) {
+        if (((bool)Tools::isSubmit('submitRecommend_similar_productsModule')) == true)
+        {
             $this->postProcess();
-        } elseif (Tools::isSubmit('submit_api_credentials_'.$this->name)) {
+        }
+        elseif (Tools::isSubmit('submit_api_credentials_'.$this->name))
+        {
             $this->processApiCredentialsFormFields();
         }
 
@@ -199,8 +202,10 @@ class RecommendSimilarProducts extends Module
 
         $output = '';
 
-        if (count($this->errors)) {
-            foreach ($this->errors as $error) {
+        if (count($this->errors))
+        {
+            foreach ($this->errors as $error)
+            {
                 $output .= $this->displayError($error);
             }
         }
@@ -302,7 +307,8 @@ class RecommendSimilarProducts extends Module
      */
     protected function postProcess()
     {
-        foreach (array_keys($this->getConfigFormValues()) as $key) {
+        foreach (array_keys($this->getConfigFormValues()) as $key)
+        {
             Configuration::updateValue(
                 $key,
                 Tools::getValue($key),
@@ -404,11 +410,13 @@ class RecommendSimilarProducts extends Module
      */
     protected function processApiCredentialsFormFields()
     {
-        if (!$this->validateApiCredentialsFormFields()) {
+        if (!$this->validateApiCredentialsFormFields())
+        {
             return;
         }
         
-        foreach (array_keys($this->getApiCredentialsFormFieldsValue()) as $key) {
+        foreach (array_keys($this->getApiCredentialsFormFieldsValue()) as $key)
+        {
             Configuration::updateValue(
                 $key,
                 Tools::getValue($key),
@@ -439,7 +447,9 @@ class RecommendSimilarProducts extends Module
     protected function validateApiKey()
     {
         $apiKey = Tools::getValue('RECOMMEND_SIMILAR_PRODUCTS_API_KEY');
-        if (is_string($apiKey) && trim($apiKey)) {
+
+        if (is_string($apiKey) && trim($apiKey))
+        {
             $handle = curl_init();
             $httpHeader = array(
                 'Vis-API-KEY: '.$apiKey,
@@ -454,13 +464,15 @@ class RecommendSimilarProducts extends Module
             
             curl_close($handle);
 
-            if (($result === false) || !is_array($data = json_decode($result, true))) {
+            if (($result === false) || !is_array($data = json_decode($result, true)))
+            {
                 $this->errors[] = $this->l('Failed to validate the API key.');
 
                 return;
             }
 
-            if (isset($data['code']) && ((int)$data['code'] === 200)) {
+            if (isset($data['code']) && ((int)$data['code'] === 200))
+            {
                 return;
             }
         }
@@ -516,7 +528,8 @@ class RecommendSimilarProducts extends Module
     */
     public function hookBackOfficeHeader()
     {
-        if (Tools::getValue('module_name') == $this->name) {
+        if (Tools::getValue('module_name') == $this->name)
+        {
             $this->context->controller->addJS($this->_path.'views/js/back.js');
             $this->context->controller->addCSS($this->_path.'views/css/back.css');
         }
@@ -527,15 +540,18 @@ class RecommendSimilarProducts extends Module
      */
     public function hookHeader()
     {
-        if (Dispatcher::getInstance()->getController() === 'product') {
-            if (Tools::isSubmit('rsp')) {
+        if (Dispatcher::getInstance()->getController() === 'product')
+        {
+            if (Tools::isSubmit('rsp'))
+            {
                 $view = new RecommendSimilarProductsView();
                 $view->id_product = (int)Tools::getValue('id_product');
                 $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
                 $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
                 $view->date = date('Y-m-d H:i:s');
                 
-                if (!$view->save()) {
+                if (!$view->save())
+                {
                     PrestaShopLogger::addLog(
                         'RecommendSimilarProducts::hookHeader - Failed to save click object',
                         3,
@@ -547,15 +563,19 @@ class RecommendSimilarProducts extends Module
                 }
             }
 
-            if (_RSP_PS16_) {
+            if (_RSP_PS16_)
+            {
                 $this->context->controller->addJS($this->_path.'/views/js/front16.js');
-            } else {
+            }
+            else
+            {
                 /** @var ProductController $controller */
                 $controller = $this->context->controller;
                 /** @var Product $product */
                 $product = $controller->getProduct();
 
-                if (is_array($accessories = $product->getAccessories($this->context->language->id))) {
+                if (is_array($accessories = $product->getAccessories($this->context->language->id)))
+                {
                     require_once dirname(__FILE__) . '/classes/ProductLazyArray.php';
 
                     $presentationSettings = (new ProductPresenterFactory(
@@ -563,7 +583,8 @@ class RecommendSimilarProducts extends Module
                         new TaxConfiguration()
                     ))->getPresentationSettings();
 
-                    foreach ($accessories as &$accessory) {
+                    foreach ($accessories as &$accessory)
+                    {
                         $accessory = new RecommendSimilarProducts\PrestaShop\ProductLazyArray(
                             $presentationSettings,
                             Product::getProductProperties($this->context->language->id, $accessory, $this->context),
@@ -811,8 +832,10 @@ class RecommendSimilarProducts extends Module
     {
         $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
 
-        foreach ($products as $key => $prod) {
-            if (!Validate::isLoadedObject($product = new Product((int)$key))) {
+        foreach ($products as $key => $prod)
+        {
+            if (!Validate::isLoadedObject($product = new Product((int)$key)))
+            {
                 continue;
             }
 
@@ -822,7 +845,8 @@ class RecommendSimilarProducts extends Module
 
     public function processAjaxCall()
     {
-        switch (Tools::getValue('action')) {
+        switch (Tools::getValue('action'))
+        {
             case 'click':
                 $click = new RecommendSimilarProductsClick();
                 $click->id_product = (int)Tools::getValue('id_product');

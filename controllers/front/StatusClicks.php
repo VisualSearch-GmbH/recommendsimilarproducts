@@ -18,7 +18,8 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization()) {
+        if (!$this->checkAuthorization())
+        {
             die("Authorization failed");
         }
 
@@ -27,8 +28,10 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $clicks = $views = array();
         
-        foreach ($tmpClicks as $click) {
-            if (!isset($clicks[$click['date']])) {
+        foreach ($tmpClicks as $click)
+        {
+            if (!isset($clicks[$click['date']]))
+            {
                 $clicks[$click['date']] = array();
             }
             
@@ -46,8 +49,10 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             );
         }
 
-        foreach ($tmpViews as $view) {
-            if (!isset($views[$view['date']])) {
+        foreach ($tmpViews as $view)
+        {
+            if (!isset($views[$view['date']]))
+            {
                 $views[$view['date']] = array();
             }
             

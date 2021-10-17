@@ -10,7 +10,8 @@
 
 require_once dirname(__FILE__) . '/../../config/config.inc.php';
 
-if (!Module::isEnabled('recommendsimilarproducts')) {
+if (!Module::isEnabled('recommendsimilarproducts'))
+{
     die('The module is disabled.');
 }
 
