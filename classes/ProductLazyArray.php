@@ -125,12 +125,14 @@ class ProductLazyArray extends LazyArray
             return array();
         }
 
-        return array_map(function (array $color) {
-            $color['add_to_cart_url'] = $this->link->getAddToCartURL(
+        $lazyArray = $this;
+
+        return array_map(function (array $color) use ($lazyArray) {
+            $color['add_to_cart_url'] = $lazyArray->link->getAddToCartURL(
                 $color['id_product'],
                 $color['id_product_attribute']
             );
-            $color['url'] = $this->getProductURL($color, $this->language);
+            $color['url'] = $lazyArray->getProductURL($color, $lazyArray->language);
             $color['type'] = 'color';
             $color['html_color_code'] = $color['color'];
             unset($color['color']);
