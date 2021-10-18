@@ -42,7 +42,8 @@ class ProductLazyArray extends LazyArray
         Language $language,
         Link $link,
         TranslatorInterface $translator
-    ) {
+    )
+    {
         $this->language = $language;
         $this->link = $link;
         $this->productColorsRetriever = new ProductColorsRetriever();
@@ -72,7 +73,8 @@ class ProductLazyArray extends LazyArray
         array $product,
         Language $language,
         $canonical = false
-    ) {
+    )
+    {
         $linkRewrite = isset($product['link_rewrite']) ? $product['link_rewrite'] : null;
         $category = isset($product['category']) ? $product['category'] : null;
         $ean13 = isset($product['ean13']) ? $product['ean13'] : null;
@@ -121,7 +123,8 @@ class ProductLazyArray extends LazyArray
     {
         $colors = $this->productColorsRetriever->getColoredVariants($this->product['id_product']);
 
-        if (!is_array($colors)) {
+        if (!is_array($colors))
+        {
             return array();
         }
 
