@@ -18,8 +18,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization())
-        {
+        if (!$this->checkAuthorization()) {
             die("Authorization failed");
         }
 
@@ -27,14 +26,12 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $clicks = $views = array();
-        
-        foreach ($tmpClicks as $click)
-        {
-            if (!isset($clicks[$click['date']]))
-            {
+
+        foreach ($tmpClicks as $click) {
+            if (!isset($clicks[$click['date']])) {
                 $clicks[$click['date']] = array();
             }
-            
+
             $clicks[$click['date']][] = array(
                 'url' => $this->context->link->getProductLink(
                     (int)$click['id_product'],
@@ -49,13 +46,11 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             );
         }
 
-        foreach ($tmpViews as $view)
-        {
-            if (!isset($views[$view['date']]))
-            {
+        foreach ($tmpViews as $view) {
+            if (!isset($views[$view['date']])) {
                 $views[$view['date']] = array();
             }
-            
+
             $views[$view['date']][] = array(
                 'url' => $this->context->link->getProductLink(
                     (int)$view['id_product'],

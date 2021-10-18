@@ -12,7 +12,6 @@ require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontCont
 
 class RecommendSimilarProductsStatusVersionModuleFrontController extends RecommendSimilarProductsFrontController
 {
-
     public function init()
     {
         parent::init();

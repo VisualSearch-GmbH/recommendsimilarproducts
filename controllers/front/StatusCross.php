@@ -13,7 +13,6 @@ require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontCont
 
 class RecommendSimilarProductsStatusCrossModuleFrontController extends RecommendSimilarProductsFrontController
 {
-
     public function init()
     {
         parent::init();
@@ -23,8 +22,7 @@ class RecommendSimilarProductsStatusCrossModuleFrontController extends Recommend
     {
         parent::initContent();
 
-        if (!$this->checkAuthorization())
-        {
+        if (!$this->checkAuthorization()) {
             die("Authorization failed");
         }
 
@@ -32,20 +30,16 @@ class RecommendSimilarProductsStatusCrossModuleFrontController extends Recommend
         $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
 
         $category_ID = -1;
-        if (!empty($products))
-        {
+        if (!empty($products)) {
             $category_ID = getFirstCategory($products);
         }
 
         //echo "<pre>"; print_r($category_ID); die(" exit...");
 
         // related products exist for every product -> no update needed
-        if ($category_ID == -1)
-        {
+        if ($category_ID == -1) {
             die("Number of products: ". sizeof($products) ."; all products have related products");
-        }
-        else
-        {
+        } else {
             die("Number of products: ". sizeof($products) ."; missing products in category with ID: ".$category_ID);
         }
     }
