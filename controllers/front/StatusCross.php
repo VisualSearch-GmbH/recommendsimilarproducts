@@ -27,7 +27,7 @@ class RecommendSimilarProductsStatusCrossModuleFrontController extends Recommend
         }
 
         // Find first category with at least one product with empty related products
-        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
+        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC', false, true);
 
         $category_ID = -1;
         if (!empty($products)) {

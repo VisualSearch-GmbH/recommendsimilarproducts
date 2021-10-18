@@ -13,11 +13,6 @@ function getFirstCategory($products): int
     $category_ID = -1;
 
     foreach ($products as $key => $prod) {
-        // check if product is active
-        if ($prod['active'] != 1) {
-            continue;
-        }
-
         // Get cover image for your product
         $image = Image::getCover($prod['id_product']);
 

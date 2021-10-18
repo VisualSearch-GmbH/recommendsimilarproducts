@@ -33,7 +33,7 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         //
         // Find first category with at least one product with empty related products
         //
-        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
+        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC', false, true);
 
         $category_ID = -1;
         if (!empty($products)) {
@@ -68,11 +68,6 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         $products_list = array();
         if (!empty($products)) {
             foreach ($products as $key => $prod) {
-                // check if product is active
-                if ($prod['active'] != 1) {
-                    continue;
-                }
-
                 // Get cover image for your product
                 $image = Image::getCover($prod['id_product']);
                 // Load Product Object
