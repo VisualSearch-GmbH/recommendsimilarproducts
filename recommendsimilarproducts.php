@@ -16,6 +16,7 @@ define('_RSP_PS16_', version_compare(_PS_VERSION_, '1.7', '<'));
 
 require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsClick.php';
 require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsView.php';
+require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsBlockView.php';
 
 class RecommendSimilarProducts extends Module
 {
@@ -30,7 +31,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '2.0.0';
+        $this->version = '2.0.1';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -821,6 +822,21 @@ class RecommendSimilarProducts extends Module
         }
     }
 
+    /**
+     * @param int $productId
+     *
+     * @return int
+     */
+    public function getDefaultCategoryId($productId)
+    {
+        return (int)Db::getInstance()->getValue('
+            SELECT product_shop.`id_category_default`
+            FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Shop::addSqlAssociation('product', 'p') . '
+            WHERE p.`id_product` = ' . (int)$productId
+        );
+    }
+
     public function processAjaxCall()
     {
         switch (Tools::getValue('action')) {
@@ -828,11 +844,14 @@ class RecommendSimilarProducts extends Module
                 $click = new RecommendSimilarProductsClick();
                 $click->id_product = (int)Tools::getValue('id_product');
                 $click->id_product_attribute = (int)Tools::getValue('id_product_attribute');
+                $click->id_category = $this->getDefaultCategoryId($click->id_product);
+                $click->id_source_product = (int)Tools::getValue('id_source_product');
+                $click->id_source_category = $this->getDefaultCategoryId($click->id_source_product);
                 $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
                 $click->date = date('Y-m-d H:i:s');
                 if (!$click->save()) {
                     PrestaShopLogger::addLog(
-                        'RecommendSimilarProducts::processAjaxCall - Failed to save click object',
+                        'RecommendSimilarProducts::processAjaxCall - Failed to save a click object',
                         3,
                         null,
                         null,
@@ -850,7 +869,24 @@ class RecommendSimilarProducts extends Module
                 $view->date = date('Y-m-d H:i:s');
                 if (!$view->save()) {
                     PrestaShopLogger::addLog(
-                        'RecommendSimilarProducts::processAjaxCall - Failed to save view object',
+                        'RecommendSimilarProducts::processAjaxCall - Failed to save a view object',
+                        3,
+                        null,
+                        null,
+                        null,
+                        true
+                    );
+                }
+                break;
+
+            case 'block_view':
+                $blockView = new RecommendSimilarProductsBlockView();
+                $blockView->id_product = (int)Tools::getValue('id_product');
+                $blockView->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $blockView->date = date('Y-m-d H:i:s');
+                if (!$blockView->save()) {
+                    PrestaShopLogger::addLog(
+                        'RecommendSimilarProducts::processAjaxCall - Failed to save a block view object',
                         3,
                         null,
                         null,

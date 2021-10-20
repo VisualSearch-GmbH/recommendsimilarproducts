@@ -33,6 +33,14 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_produ
     PRIMARY KEY (`id_recommend_similar_products_views`)
 ) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
 
+$sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_products_block_views` (
+    `id_recommend_similar_products_block_views` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+    `id_product` INT(10) UNSIGNED NOT NULL,
+    `id_customer` INT(10) UNSIGNED NOT NULL,
+    `date` DATETIME NOT NULL,
+    PRIMARY KEY (`id_recommend_similar_products_block_views`)
+) ENGINE=' . _MYSQL_ENGINE_ . ' DEFAULT CHARSET=utf8;';
+
 foreach ($sql as $query) {
     if (Db::getInstance()->execute($query) == false) {
         return false;

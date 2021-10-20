@@ -11,6 +11,7 @@
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontController.php';
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsClick.php';
 require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsView.php';
+require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsBlockView.php';
 
 class RecommendSimilarProductsStatusClicksModuleFrontController extends RecommendSimilarProductsFrontController
 {
@@ -22,10 +23,11 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             die("Authorization failed");
         }
 
-        $dateFrom = date('Y-m-d', strtotime('-1 months'));
+        $dateFrom = date('Y-m-d H:i:s', strtotime('-1 day'));
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
-        $clicks = $views = array();
+        $tmpBlockViews = RecommendSimilarProductsBlockView::getBlockViews($dateFrom, true);
+        $clicks = $views = $blockViews = array();
 
         foreach ($tmpClicks as $click) {
             if (!isset($clicks[$click['date']])) {
@@ -33,15 +35,10 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             }
 
             $clicks[$click['date']][] = array(
-                'url' => $this->context->link->getProductLink(
-                    (int)$click['id_product'],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    (int)$click['id_product_attribute']
-                ),
+                'id_target' => $click['id_product'],
+                'id_category_target' => $click['id_category'],
+                'id_source' => $click['id_source_product'],
+                'id_category_source' => $click['id_source_category'],
                 'id_customer' => $click['id_customer'],
             );
         }
@@ -52,19 +49,26 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             }
 
             $views[$view['date']][] = array(
-                'url' => $this->context->link->getProductLink(
-                    (int)$view['id_product'],
-                    null,
-                    null,
-                    null,
-                    null,
-                    null,
-                    (int)$view['id_product_attribute']
-                ),
+                'id_target' => $view['id_product'],
                 'id_customer' => $view['id_customer'],
             );
         }
 
-        die(json_encode(array('clicks' => $clicks, 'views' => $views)));
+        foreach ($tmpBlockViews as $blockView) {
+            if (!isset($blockViews[$blockView['date']])) {
+                $blockViews[$blockView['date']] = array();
+            }
+
+            $blockViews[$blockView['date']][] = array(
+                'id_source' => $blockView['id_product'],
+                'id_customer' => $blockView['id_customer'],
+            );
+        }
+
+        die(json_encode(array(
+            'clicks' => $clicks,
+            'views_recommended_products' => $views,
+            'views_recommendation_slider' => $blockViews,
+        )));
     }
 }

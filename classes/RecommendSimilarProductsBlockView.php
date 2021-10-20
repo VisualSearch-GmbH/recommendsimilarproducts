@@ -8,32 +8,12 @@
  * @license MIT License
  */
 
-class RecommendSimilarProductsClick extends ObjectModel
+class RecommendSimilarProductsBlockView extends ObjectModel
 {
     /**
      * @var int
      */
     public $id_product = null;
-
-    /**
-     * @var int
-     */
-    public $id_product_attribute = null;
-
-    /**
-     * @var int
-     */
-    public $id_category = null;
-
-    /**
-     * @var int
-     */
-    public $id_source_product = null;
-
-    /**
-     * @var int
-     */
-    public $id_source_category = null;
 
     /**
      * @var int
@@ -49,14 +29,10 @@ class RecommendSimilarProductsClick extends ObjectModel
      * @var array
      */
     public static $definition = array(
-        'table' => 'recommend_similar_products_clicks',
-        'primary' => 'id_recommend_similar_products_clicks',
+        'table' => 'recommend_similar_products_block_views',
+        'primary' => 'id_recommend_similar_products_block_views',
         'fields' => array(
             'id_product' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_product_attribute' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_category' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_source_product' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_source_category' => array('type' => self::TYPE_INT, 'required' => true),
             'id_customer' => array('type' => self::TYPE_INT, 'required' => true),
             'date' => array('type' => self::TYPE_DATE, 'required' => true),
         ),
@@ -68,16 +44,16 @@ class RecommendSimilarProductsClick extends ObjectModel
      *
      * @return array
      */
-    public static function getClicks($dateFrom = null, $forActiveProductsOnly = false)
+    public static function getBlockViews($dateFrom = null, $forActiveProductsOnly = false)
     {
         $query = (new DbQuery())
-            ->select('c.*')
-            ->from('recommend_similar_products_clicks', 'c')
-            ->innerJoin('product_shop', 'ps', 'ps.id_product = c.id_product AND ps.id_shop = ' .
+            ->select('v.*')
+            ->from('recommend_similar_products_block_views', 'v')
+            ->innerJoin('product_shop', 'ps', 'ps.id_product = v.id_product AND ps.id_shop = ' .
                 Context::getContext()->shop->id);
 
         if ($dateFrom) {
-            $query->where('c.date >= \'' . $dateFrom . '\'');
+            $query->where('v.date >= \'' . $dateFrom . '\'');
         }
 
         if ($forActiveProductsOnly) {

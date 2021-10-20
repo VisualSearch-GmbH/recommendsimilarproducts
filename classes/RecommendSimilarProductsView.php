@@ -59,7 +59,7 @@ class RecommendSimilarProductsView extends ObjectModel
                 Context::getContext()->shop->id);
 
         if ($dateFrom) {
-            $query->where('v.date >= ' . $dateFrom);
+            $query->where('v.date >= \'' . $dateFrom . '\'');
         }
 
         if ($forActiveProductsOnly) {
