@@ -833,8 +833,7 @@ class RecommendSimilarProducts extends Module
             SELECT product_shop.`id_category_default`
             FROM `' . _DB_PREFIX_ . 'product` p
             ' . Shop::addSqlAssociation('product', 'p') . '
-            WHERE p.`id_product` = ' . (int)$productId
-        );
+            WHERE p.`id_product` = ' . (int)$productId);
     }
 
     public function processAjaxCall()
