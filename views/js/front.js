@@ -12,22 +12,10 @@
         var data = {action};
 
         if ($target.hasClass('product-accessories')) {
-            data['id_product'] = $('#product_page_product_id').val();
+            data['id_product'] = recommendsimilarproducts.id_source_product;
         } else {
-            var $productMiniature = $target.hasClass('js-product-miniature') ?
-                $target :
-                $target.closest('.js-product-miniature');
-            
-            if ($productMiniature.length !== 1) {
-                return;
-            }
-
-            data['id_product'] = $productMiniature.data('id-product');
-            data['id_product_attribute'] = $productMiniature.data('id-product-attribute');
-
-            if (action === 'click') {
-                data['id_source_product'] = $('#product_page_product_id').val();
-            }
+            data['id_product'] = $target.data('id-product');
+            data['id_product_attribute'] = $target.data('id-product-attribute');
         }
 
         $.post(recommendsimilarproducts.ajax_url, data);
@@ -80,13 +68,5 @@
 
     $(document).ready(function() {
         checkVisibility();
-    }).on('click', '.product-accessories .js-product-miniature a', function() {
-        sendActionData('click', $(this));
-    }).on('mousedown', '.product-accessories .js-product-miniature a', function(e1) {
-        $(document).one('mouseup', '.product-accessories .js-product-miniature a', function(e2) {
-            if ((e1.which === 2) && (e1.target === e2.target)) {
-                sendActionData('click', $(this));
-            }
-        })
     });
 }());

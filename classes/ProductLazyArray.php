@@ -77,6 +77,12 @@ class ProductLazyArray extends LazyArray
         $category = isset($product['category']) ? $product['category'] : null;
         $ean13 = isset($product['ean13']) ? $product['ean13'] : null;
 
+        $extraParams = array(
+            'rsp' => 1,
+            'id_source_product' => (int)\Tools::getValue('id_product'),
+            'id_target_attribute' => (int)$product['id_product_attribute'],
+        );
+
         return $this->link->getProductLink(
             $product['id_product'],
             $linkRewrite,
@@ -88,7 +94,7 @@ class ProductLazyArray extends LazyArray
             false,
             false,
             true,
-            array('rsp' => 1)
+            $extraParams
         );
     }
 
