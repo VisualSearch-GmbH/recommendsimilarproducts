@@ -8,37 +8,19 @@
         return;
     }
 
-    function getSourceProductId() {
-        var $input = $('#product_page_product_id');
-        
-        return ($input.length === 1) ? $input.val() : 0;
-    }
-    
     function sendActionData(action, $target) {
         var data = {action};
 
         if ($target.hasClass('accessories-block')) {
-            data['id_product'] = getSourceProductId();
+            data['id_product'] = recommendsimilarproducts.id_source_product;
         } else {
-            var $productMiniature = $target.hasClass('ajax_block_product') ?
-                $target :
-                $target.closest('.ajax_block_product');
-            
-            if ($productMiniature.length !== 1) {
-                return;
-            }
-
-            var $productData = $productMiniature.find('.product-data');
+            var $productData = $target.find('.product-data');
             if ($productData.length !== 1) {
                 return;
             }
 
             data['id_product'] = $productData.data('id_product');
             data['id_product_attribute'] = $productData.data('id_product_attribute');
-
-            if (action === 'click') {
-                data['id_source_product'] = getSourceProductId();
-            }
         }
 
         $.post(recommendsimilarproducts.ajax_url, data);
@@ -91,13 +73,23 @@
     
     $(document).ready(function() {
         checkVisibility();
-    }).on('click', '.accessories-block .ajax_block_product a', function() {
-        sendActionData('click', $(this));
-    }).on('mousedown', '.accessories-block .ajax_block_product a', function(e1) {
-        $(document).one('mouseup', '.accessories-block .ajax_block_product a', function(e2) {
-            if ((e1.which === 2) && (e1.target === e2.target)) {
-                sendActionData('click', $(this));
+        
+        var paramsTemplate = 'rsp=1&id_source_product=' + recommendsimilarproducts.id_source_product +
+            '&id_target_attribute=';
+
+        $('.accessories-block .ajax_block_product a').each(function() {
+            var $link = $(this);
+            var url = $link.attr('href');
+            var anchor = '';
+            var $productData = $link.closest('.ajax_block_product').find('.product-data');
+            var params = paramsTemplate + ($productData.length ? $productData.data('id_product_attribute') : 0);
+            
+            if (url.indexOf('#') !== -1) {
+                anchor = url.substring(url.indexOf('#'), url.length);
+                url = url.substring(0, url.indexOf('#'));
             }
-        })
+            
+            $link.attr('href', url + (url.indexOf('?') === -1 ? '?' : '&') + params + anchor);
+        });
     });
 }());

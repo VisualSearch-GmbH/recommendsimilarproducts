@@ -525,21 +525,38 @@ class RecommendSimilarProducts extends Module
     }
 
     /**
+     * @param int $productId
+     *
+     * @return int
+     */
+    public function getDefaultCategoryId($productId)
+    {
+        return (int)Db::getInstance()->getValue('
+            SELECT product_shop.`id_category_default`
+            FROM `' . _DB_PREFIX_ . 'product` p
+            ' . Shop::addSqlAssociation('product', 'p') . '
+            WHERE p.`id_product` = ' . (int)$productId);
+    }
+
+    /**
      * Add the CSS & JavaScript files you want to be added on the FO.
      */
     public function hookHeader()
     {
         if (Dispatcher::getInstance()->getController() === 'product') {
             if (Tools::isSubmit('rsp')) {
-                $view = new RecommendSimilarProductsView();
-                $view->id_product = (int)Tools::getValue('id_product');
-                $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
-                $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
-                $view->date = date('Y-m-d H:i:s');
+                $click = new RecommendSimilarProductsClick();
+                $click->id_product = (int)Tools::getValue('id_product');
+                $click->id_product_attribute = (int)Tools::getValue('id_target_attribute');
+                $click->id_category = $this->getDefaultCategoryId($click->id_product);
+                $click->id_source_product = (int)Tools::getValue('id_source_product');
+                $click->id_source_category = $this->getDefaultCategoryId($click->id_source_product);
+                $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $click->date = date('Y-m-d H:i:s');
 
-                if (!$view->save()) {
+                if (!$click->save()) {
                     PrestaShopLogger::addLog(
-                        'RecommendSimilarProducts::hookHeader - Failed to save click object',
+                        'RecommendSimilarProducts::hookHeader - Failed to save a click object',
                         3,
                         null,
                         null,
@@ -587,6 +604,7 @@ class RecommendSimilarProducts extends Module
 
             Media::addJsDef(array(
                 $this->name => array(
+                    'id_source_product' => (int)Tools::getValue('id_product'),
                     'ajax_url' => preg_replace('/\/$/', '', $this->context->link->getBaseLink()) .
                         '/modules/' . $this->name . '/' . $this->name . '-ajax.php'
                 )
@@ -822,44 +840,9 @@ class RecommendSimilarProducts extends Module
         }
     }
 
-    /**
-     * @param int $productId
-     *
-     * @return int
-     */
-    public function getDefaultCategoryId($productId)
-    {
-        return (int)Db::getInstance()->getValue('
-            SELECT product_shop.`id_category_default`
-            FROM `' . _DB_PREFIX_ . 'product` p
-            ' . Shop::addSqlAssociation('product', 'p') . '
-            WHERE p.`id_product` = ' . (int)$productId);
-    }
-
     public function processAjaxCall()
     {
         switch (Tools::getValue('action')) {
-            case 'click':
-                $click = new RecommendSimilarProductsClick();
-                $click->id_product = (int)Tools::getValue('id_product');
-                $click->id_product_attribute = (int)Tools::getValue('id_product_attribute');
-                $click->id_category = $this->getDefaultCategoryId($click->id_product);
-                $click->id_source_product = (int)Tools::getValue('id_source_product');
-                $click->id_source_category = $this->getDefaultCategoryId($click->id_source_product);
-                $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
-                $click->date = date('Y-m-d H:i:s');
-                if (!$click->save()) {
-                    PrestaShopLogger::addLog(
-                        'RecommendSimilarProducts::processAjaxCall - Failed to save a click object',
-                        3,
-                        null,
-                        null,
-                        null,
-                        true
-                    );
-                }
-                break;
-
             case 'view':
                 $view = new RecommendSimilarProductsView();
                 $view->id_product = (int)Tools::getValue('id_product');
