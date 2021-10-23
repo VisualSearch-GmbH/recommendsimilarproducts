@@ -23,17 +23,7 @@ class RecommendSimilarProductsClick extends ObjectModel
     /**
      * @var int
      */
-    public $id_category = null;
-
-    /**
-     * @var int
-     */
     public $id_source_product = null;
-
-    /**
-     * @var int
-     */
-    public $id_source_category = null;
 
     /**
      * @var int
@@ -54,9 +44,7 @@ class RecommendSimilarProductsClick extends ObjectModel
         'fields' => array(
             'id_product' => array('type' => self::TYPE_INT, 'required' => true),
             'id_product_attribute' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_category' => array('type' => self::TYPE_INT, 'required' => true),
             'id_source_product' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_source_category' => array('type' => self::TYPE_INT, 'required' => true),
             'id_customer' => array('type' => self::TYPE_INT, 'required' => true),
             'date' => array('type' => self::TYPE_DATE, 'required' => true),
         ),

@@ -19,6 +19,7 @@ $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_produ
     `id_recommend_similar_products_clicks` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     `id_product` INT(10) UNSIGNED NOT NULL,
     `id_product_attribute` INT(10) UNSIGNED NOT NULL,
+    `id_source_product` INT(10) UNSIGNED NOT NULL,
     `id_customer` INT(10) UNSIGNED NOT NULL,
     `date` DATETIME NOT NULL,
     PRIMARY KEY (`id_recommend_similar_products_clicks`)

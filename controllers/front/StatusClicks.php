@@ -23,7 +23,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             die("Authorization failed");
         }
 
-        $dateFrom = date('Y-m-d H:i:s', strtotime('-1 day'));
+        $dateFrom = date('Y-m-d H:i:s', strtotime('-2 weeks'));
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $tmpBlockViews = RecommendSimilarProductsBlockView::getBlockViews($dateFrom, true);
@@ -36,9 +36,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
 
             $clicks[$click['date']][] = array(
                 'id_target' => $click['id_product'],
-                'id_category_target' => $click['id_category'],
                 'id_source' => $click['id_source_product'],
-                'id_category_source' => $click['id_source_category'],
                 'id_customer' => $click['id_customer'],
             );
         }

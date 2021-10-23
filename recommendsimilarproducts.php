@@ -548,9 +548,7 @@ class RecommendSimilarProducts extends Module
                 $click = new RecommendSimilarProductsClick();
                 $click->id_product = (int)Tools::getValue('id_product');
                 $click->id_product_attribute = (int)Tools::getValue('id_target_attribute');
-                $click->id_category = $this->getDefaultCategoryId($click->id_product);
                 $click->id_source_product = (int)Tools::getValue('id_source_product');
-                $click->id_source_category = $this->getDefaultCategoryId($click->id_source_product);
                 $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
                 $click->date = date('Y-m-d H:i:s');
 
