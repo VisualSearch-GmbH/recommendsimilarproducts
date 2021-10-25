@@ -27,7 +27,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $tmpBlockViews = RecommendSimilarProductsBlockView::getBlockViews($dateFrom, true);
-        $clicks = $views = $blockViews = array();
+        $clicks = $views = $blockViews = $products = array();
 
         foreach ($tmpClicks as $click) {
             if (!isset($clicks[$click['date']])) {
@@ -39,6 +39,8 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
                 'id_source' => $click['id_source_product'],
                 'id_customer' => $click['id_customer'],
             );
+
+            $products[$click['id_product']] = true;
         }
 
         foreach ($tmpViews as $view) {
@@ -50,6 +52,8 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
                 'id_target' => $view['id_product'],
                 'id_customer' => $view['id_customer'],
             );
+
+            $products[$view['id_product']] = true;
         }
 
         foreach ($tmpBlockViews as $blockView) {
@@ -61,29 +65,27 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
                 'id_source' => $blockView['id_product'],
                 'id_customer' => $blockView['id_customer'],
             );
+
+            $products[$blockView['id_product']] = true;
         }
 
         $products_list = array();
-        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC', false, true);
 
         if (!empty($products)) {
-            foreach ($products as $key => $prod) {
+            foreach ($products as $product_ID => $value) {
                 // Categories
-                $categories = Product::getProductCategoriesFull($prod['id_product']);
+                $categories = Product::getProductCategoriesFull($product_ID);
 
                 $category_list = array();
                 if (!empty($categories)) {
-                    foreach ($categories as $cat) {
-                        if (strcmp($cat['name'], 'Home') !== 0) {
+                    foreach ($categories as $category_ID => $cat) {
+                        if ((int)$category_ID > 2) {
                             $category_list[] = $cat['name'];
                         }
                     }
                 }
 
-                $product_ID = $prod['id_product'];
-                $product_category = $category_list;
-
-                array_push($products_list, [$product_ID, $product_category]);
+                array_push($products_list, [$product_ID, $category_list]);
             }
         } else {
             die(json_encode(array(
