@@ -23,7 +23,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             die("Authorization failed");
         }
 
-        $dateFrom = date('Y-m-d H:i:s', strtotime('-2 weeks'));
+        $dateFrom = date('Y-m-d H:i:s', strtotime('-1 week'));
         $tmpClicks = RecommendSimilarProductsClick::getClicks($dateFrom, true);
         $tmpViews = RecommendSimilarProductsView::getViews($dateFrom, true);
         $tmpBlockViews = RecommendSimilarProductsBlockView::getBlockViews($dateFrom, true);
@@ -63,10 +63,41 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
             );
         }
 
+        $products_list = array();
+        $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC', false, true);
+
+        if (!empty($products)) {
+            foreach ($products as $key => $prod) {
+                // Categories
+                $categories = Product::getProductCategoriesFull($prod['id_product']);
+
+                $category_list = array();
+                if (!empty($categories)) {
+                    foreach ($categories as $cat) {
+                        if (strcmp($cat['name'], 'Home') !== 0) {
+                            $category_list[] = $cat['name'];
+                        }
+                    }
+                }
+
+                $product_ID = $prod['id_product'];
+                $product_category = $category_list;
+
+                array_push($products_list, [$product_ID, $product_category]);
+            }
+        } else {
+            die(json_encode(array(
+                'clicks' => $clicks,
+                'views_recommended_products' => $views,
+                'views_recommendation_slider' => $blockViews,
+            )));
+        }
+
         die(json_encode(array(
             'clicks' => $clicks,
             'views_recommended_products' => $views,
             'views_recommendation_slider' => $blockViews,
+            'product_categories' => $products_list,
         )));
     }
 }
