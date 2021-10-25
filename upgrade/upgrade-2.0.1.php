@@ -25,9 +25,7 @@ function upgrade_module_2_0_1($module)
 {
     return Db::getInstance()->execute('
         ALTER TABLE `' . _DB_PREFIX_ . 'recommend_similar_products_clicks`
-        ADD `id_category` INT(10) UNSIGNED NOT NULL AFTER `id_product_attribute`,
-        ADD `id_source_product` INT(10) UNSIGNED NOT NULL AFTER `id_category`,
-        ADD `id_source_category` INT(10) UNSIGNED NOT NULL AFTER `id_source_product`;
+        ADD `id_source_product` INT(10) UNSIGNED NOT NULL AFTER `id_product_attribute`;
     ') && Db::getInstance()->execute('
         CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_products_block_views` (
             `id_recommend_similar_products_block_views` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
