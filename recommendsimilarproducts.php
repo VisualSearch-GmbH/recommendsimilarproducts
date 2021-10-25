@@ -31,7 +31,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '2.0.3';
+        $this->version = '2.0.4';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
