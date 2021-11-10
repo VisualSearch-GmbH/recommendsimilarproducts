@@ -17,21 +17,23 @@ define('_RSP_PS16_', version_compare(_PS_VERSION_, '1.7', '<'));
 require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsClick.php';
 require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsView.php';
 require_once dirname(__FILE__) . '/classes/RecommendSimilarProductsBlockView.php';
+require_once dirname(__FILE__) . '/thirdparty/CrawlerDetect/CrawlerDetect.php';
 
 class RecommendSimilarProducts extends Module
 {
-    protected $config_form = false;
-
     /**
      * @var array
      */
     protected $errors = array();
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '2.0.6';
+        $this->version = '2.0.7';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -529,51 +531,13 @@ class RecommendSimilarProducts extends Module
      */
     protected function isBot()
     {
-        $bots = array(
-            'Googlebot', 'Baiduspider', 'ia_archiver', 'R6_FeedFetcher', 'NetcraftSurveyAgent', 'Sogou web spider',
-            'bingbot', 'Yahoo! Slurp', 'facebookexternalhit', 'PrintfulBot', 'msnbot', 'Twitterbot', 'UnwindFetchor',
-            'urlresolver', 'Butterfly', 'TweetmemeBot', 'PaperLiBot', 'MJ12bot', 'AhrefsBot', 'Exabot', 'Ezooms',
-            'YandexBot', 'SearchmetricsBot', 'picsearch', 'TweetedTimes Bot', 'QuerySeekerSpider', 'ShowyouBot',
-            'woriobot', 'merlinkbot', 'BazQuxBot', 'Kraken', 'SISTRIX Crawler', 'R6_CommentReader', 'magpie-crawler',
-            'GrapeshotCrawler', 'PercolateCrawler', 'MaxPointCrawler', 'R6_FeedFetcher', 'NetSeer crawler',
-            'grokkit-crawler', 'SMXCrawler', 'PulseCrawler', 'Y!J-BRW', '80legs.com/webcrawler',
-            'Mediapartners-Google', 'Spinn3r', 'InAGist', 'Python-urllib', 'NING', 'TencentTraveler',
-            'Feedfetcher-Google', 'mon.itor.us', 'spbot', 'Feedly', 'bitlybot', 'ADmantX Platform', 'Niki-Bot',
-            'Pinterest', 'python-requests', 'DotBot', 'HTTP_Request2', 'linkdexbot', 'A6-Indexer', 'Baiduspider',
-            'TwitterFeed', 'Microsoft Office', 'Pingdom', 'BTWebClient', 'KatBot', 'SiteCheck', 'proximic', 'Sleuth',
-            'Abonti', '(BOT for JCE)', 'Baidu', 'Tiny Tiny RSS', 'newsblur', 'updown_tester', 'linkdex', 'baidu',
-            'searchmetrics', 'genieo', 'majestic12', 'spinn3r', 'profound', 'domainappender', 'VegeBot',
-            'terrykyleseoagency.com', 'CommonCrawler Node', 'AdlesseBot', 'metauri.com', 'libwww-perl',
-            'rogerbot-crawler', 'MegaIndex.ru', 'ltx71', 'Qwantify', 'Traackr.com', 'Re-Animator Bot', 'Pcore-HTTP',
-            'BoardReader', 'omgili', 'okhttp', 'CCBot', 'Java/1.8', 'semrush.com', 'feedbot', 'CommonCrawler',
-            'AdlesseBot', 'MetaURI', 'ibwww-perl', 'rogerbot', 'MegaIndex', 'BLEXBot', 'FlipboardProxy',
-            'techinfo@ubermetrics-technologies.com', 'trendictionbot', 'Mediatoolkitbot', 'trendiction', 'ubermetrics',
-            'ScooperBot', 'TrendsmapResolver', 'Nuzzel', 'Go-http-client', 'Applebot', 'LivelapBot', 'GroupHigh',
-            'SemrushBot', 'ltx71', 'commoncrawl', 'istellabot', 'DomainCrawler', 'cs.daum.net', 'StormCrawler',
-            'GarlikCrawler', 'The Knowledge AI', 'getstream.io/winds', 'YisouSpider', 'archive.org_bot',
-            'semantic-visions.com', 'FemtosearchBot', '360Spider', 'linkfluence.com', 'glutenfreepleasure.com',
-            'Gluten Free Crawler', 'YaK/1.0', 'Cliqzbot', 'app.hypefactors.com', 'axios', 'semantic-visions.com',
-            'webdatastats.com', 'schmorp.de', 'SEOkicks', 'DuckDuckBot', 'Barkrowler', 'ZoominfoBot', 'Linguee Bot',
-            'Mail.RU_Bot', 'OnalyticaBot', 'Linguee Bot', 'admantx-adform', 'Buck/2.2', 'Barkrowler', 'Zombiebot',
-            'Nutch', 'SemanticScholarBot', 'Jetslide', 'scalaj-http', 'XoviBot', 'sysomos.com', 'PocketParser',
-            'newspaper', 'serpstatbot', 'MetaJobBot', 'SeznamBot/3.2', 'VelenPublicWebCrawler/1.0',
-            'WordPress.com mShots', 'adscanner', 'BacklinkCrawler', 'netEstate NE Crawler', 'Astute SRM',
-            'GigablastOpenSource/1.0', 'DomainStatsBot', 'Winds: Open Source RSS & Podcast', 'dlvr.it', 'BehloolBot',
-            '7Siters', 'AwarioSmartBot', 'Apache-HttpClient/5', 'Seekport Crawler', 'AHC/2.1', 'eCairn-Grabber',
-            'mediawords bot', 'PHP-Curl-Class', 'Scrapy', 'curl/7', 'Blackboard', 'NetNewsWire', 'node-fetch',
-            'admantx', 'metadataparser', 'Domains Project', 'SerendeputyBot', 'Moreover', 'DuckDuckGo',
-            'monitoring-plugins', 'Selfoss', 'Adsbot', 'acebookexternalhit', 'SpiderLing', 'Cocolyzebot',
-            'AhrefsBot', 'TTD-Content', 'superfeedr', 'Twingly', 'Google-Apps-Scrip', 'LinkpadBot', 'CensysInspect',
-            'Reeder', 'tweetedtimes', 'Amazonbot', 'MauiBot', 'Symfony BrowserKit', 'DataForSeoBot'
-        );
+        $detect = new CrawlerDetect();
 
-        foreach ($bots as $bot) {
-            if (stripos($_SERVER['HTTP_USER_AGENT'], $bot) !== false) {
-                return true;
-            }
+        if ($detect->isCrawler($_SERVER['HTTP_USER_AGENT'])) {
+            return true;
+        } else {
+            return false;
         }
-
-        return false;
     }
 
     /**
