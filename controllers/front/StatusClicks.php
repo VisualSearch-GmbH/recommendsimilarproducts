@@ -38,7 +38,7 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
                 $clicks[$click['date']][] = array(
                     'id_target' => $click['id_product'],
                     'id_source' => $click['id_source_product'],
-                    'id_customer' => $click['id_customer'],
+                    'ip' => $click['remote_ip_address'],
                 );
                 $products[$click['id_product']] = true;
             }
@@ -51,7 +51,6 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
 
             $views[$view['date']][] = array(
                 'id_target' => $view['id_product'],
-                'id_customer' => $view['id_customer'],
             );
 
             $products[$view['id_product']] = true;
@@ -64,7 +63,6 @@ class RecommendSimilarProductsStatusClicksModuleFrontController extends Recommen
 
             $blockViews[$blockView['date']][] = array(
                 'id_source' => $blockView['id_product'],
-                'id_customer' => $blockView['id_customer'],
             );
 
             $products[$blockView['id_product']] = true;

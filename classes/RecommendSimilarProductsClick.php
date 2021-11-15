@@ -33,6 +33,11 @@ class RecommendSimilarProductsClick extends ObjectModel
     /**
      * @var string
      */
+    public $remote_ip_address = null;
+
+    /**
+     * @var string
+     */
     public $date = null;
 
     /**
@@ -46,6 +51,7 @@ class RecommendSimilarProductsClick extends ObjectModel
             'id_product_attribute' => array('type' => self::TYPE_INT, 'required' => true),
             'id_source_product' => array('type' => self::TYPE_INT, 'required' => true),
             'id_customer' => array('type' => self::TYPE_INT, 'required' => true),
+            'remote_ip_address' => array('type' => self::TYPE_STRING, 'required' => true),
             'date' => array('type' => self::TYPE_DATE, 'required' => true),
         ),
     );

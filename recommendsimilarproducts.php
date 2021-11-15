@@ -33,7 +33,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '2.1.0';
+        $this->version = '2.1.2';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -531,13 +531,7 @@ class RecommendSimilarProducts extends Module
      */
     protected function isBot()
     {
-        $detect = new CrawlerDetect();
-
-        if ($detect->isCrawler($_SERVER['HTTP_USER_AGENT'])) {
-            return true;
-        } else {
-            return false;
-        }
+        return (new CrawlerDetect())->isCrawler($_SERVER['HTTP_USER_AGENT']);
     }
 
     /**
@@ -552,6 +546,7 @@ class RecommendSimilarProducts extends Module
                 $click->id_product_attribute = (int)Tools::getValue('id_target_attribute');
                 $click->id_source_product = (int)Tools::getValue('id_source_product');
                 $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $click->remote_ip_address = $_SERVER['REMOTE_ADDR'];
                 $click->date = date('Y-m-d H:i:s');
 
                 if (!$click->save()) {
