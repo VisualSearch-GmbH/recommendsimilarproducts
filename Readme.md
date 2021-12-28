@@ -7,7 +7,6 @@ The creation of these recommendations is  possible using an innovative algorithm
 Steps how to use this module
 * Install the module
 * Request your API key. Follow the link in module configuration "Please click here to get your API credentials"
-* Please wait for an email with your API key 
 * In the configuration, insert received API key and press “Validate API credentials”
 * Switch to live mode and press “Save”
 * Please wait for automatic updates to generate the similarity  recommendations. The time for generation of recommendations depends on  the size of your shop.
