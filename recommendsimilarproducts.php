@@ -33,7 +33,7 @@ class RecommendSimilarProducts extends Module
     {
         $this->name = 'recommendsimilarproducts';
         $this->tab = 'advertising_marketing';
-        $this->version = '2.1.3';
+        $this->version = '2.1.4';
         $this->author = 'VisualSearch';
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
@@ -447,6 +447,7 @@ class RecommendSimilarProducts extends Module
             $handle = curl_init();
             $httpHeader = array(
                 'Vis-API-KEY: '.$apiKey,
+                'Vis-SOLUTION-TYPE: similar',
             );
 
             curl_setopt($handle, CURLOPT_URL, 'https://api.visualsearch.wien/api_key_verify');
