@@ -47,7 +47,7 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
             die("All products have related products");
         }
 
-        if (sizeof($products) > 10000) {
+        if (sizeof($products) > 30000) {
             //
             // Update only this category -> Find products in this category
             //
