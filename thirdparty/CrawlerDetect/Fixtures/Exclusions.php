@@ -1,12 +1,12 @@
 <?php
 /**
  * This file is part of Crawler Detect - the web crawler detection library.
+ *
  * @author (c) Mark Beech <m@rkbee.ch>
  * @copyright (c) Mark Beech <m@rkbee.ch>
  * @license MIT License
  */
-
-require_once dirname(__FILE__).'/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
+require_once dirname(__FILE__) . '/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
 
 class Exclusions extends AbstractProvider
 {
@@ -16,7 +16,7 @@ class Exclusions extends AbstractProvider
      *
      * @var array
      */
-    protected $data = array(
+    protected $data = [
         'Safari.[\d\.]*',
         'Firefox.[\d\.]*',
         ' Chrome.[\d\.]*',
@@ -65,5 +65,5 @@ class Exclusions extends AbstractProvider
         '; ID bot',
         '; POWER BOT',
         'OCTOPUS-CORE',
-    );
+    ];
 }

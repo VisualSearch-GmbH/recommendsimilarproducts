@@ -3,11 +3,11 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
 function getFirstCategory($products): int
 {
     $category_ID = -1;
@@ -36,5 +36,6 @@ function getFirstCategory($products): int
             }
         }
     }
+
     return $category_ID;
 }

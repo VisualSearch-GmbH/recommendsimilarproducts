@@ -3,11 +3,11 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
 class RecommendSimilarProductsBlockView extends ObjectModel
 {
     /**
@@ -28,15 +28,15 @@ class RecommendSimilarProductsBlockView extends ObjectModel
     /**
      * @var array
      */
-    public static $definition = array(
+    public static $definition = [
         'table' => 'recommend_similar_products_block_views',
         'primary' => 'id_recommend_similar_products_block_views',
-        'fields' => array(
-            'id_product' => array('type' => self::TYPE_INT, 'required' => true),
-            'id_customer' => array('type' => self::TYPE_INT, 'required' => true),
-            'date' => array('type' => self::TYPE_DATE, 'required' => true),
-        ),
-    );
+        'fields' => [
+            'id_product' => ['type' => self::TYPE_INT, 'required' => true],
+            'id_customer' => ['type' => self::TYPE_INT, 'required' => true],
+            'date' => ['type' => self::TYPE_DATE, 'required' => true],
+        ],
+    ];
 
     /**
      * @param string $dateFrom
@@ -64,6 +64,6 @@ class RecommendSimilarProductsBlockView extends ObjectModel
             return $result;
         }
 
-        return array();
+        return [];
     }
 }

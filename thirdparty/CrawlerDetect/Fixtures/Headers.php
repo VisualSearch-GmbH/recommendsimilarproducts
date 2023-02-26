@@ -1,12 +1,12 @@
 <?php
 /**
  * This file is part of Crawler Detect - the web crawler detection library.
+ *
  * @author (c) Mark Beech <m@rkbee.ch>
  * @copyright (c) Mark Beech <m@rkbee.ch>
  * @license MIT License
  */
-
-require_once dirname(__FILE__).'/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
+require_once dirname(__FILE__) . '/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
 
 class Headers extends AbstractProvider
 {
@@ -15,7 +15,7 @@ class Headers extends AbstractProvider
      *
      * @var array
      */
-    protected $data = array(
+    protected $data = [
         // The default User-Agent string.
         'HTTP_USER_AGENT',
         // Header can occur on devices using Opera Mini.
@@ -30,5 +30,5 @@ class Headers extends AbstractProvider
         // Sometimes, bots (especially Google) use a genuine user agent, but fill this header in with their email address
         'HTTP_FROM',
         'HTTP_X_SCANNER', // Seen in use by Netsparker
-    );
+    ];
 }

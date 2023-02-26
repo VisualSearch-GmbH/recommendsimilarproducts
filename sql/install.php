@@ -3,12 +3,12 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
-$sql = array();
+$sql = [];
 
 $sql[] = 'CREATE TABLE IF NOT EXISTS `' . _DB_PREFIX_ . 'recommend_similar_products` (
     `id_recommend_similar_products` varchar(255) NOT NULL,

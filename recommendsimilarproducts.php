@@ -3,11 +3,11 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
 if (!defined('_PS_VERSION_')) {
     exit;
 }
@@ -24,7 +24,7 @@ class RecommendSimilarProducts extends Module
     /**
      * @var array
      */
-    protected $errors = array();
+    protected $errors = [];
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ class RecommendSimilarProducts extends Module
         $this->need_instance = 0;
         $this->module_key = 'fdcc6270a1d5c04d86dbe2b4cf4406ef';
 
-        /**
+        /*
          * Set $this->bootstrap to true if your module is compliant with bootstrap (PrestaShop 1.6)
          */
         $this->bootstrap = true;
@@ -48,7 +48,7 @@ class RecommendSimilarProducts extends Module
         $this->displayName = $this->l('Recommend Similar Products');
         $this->description = $this->l('Help customers find the products efficiently and increase your conversion rate!');
 
-        $this->ps_versions_compliancy = array('min' => '1.6', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = ['min' => '1.6', 'max' => _PS_VERSION_];
     }
 
     /**
@@ -56,7 +56,7 @@ class RecommendSimilarProducts extends Module
      */
     public function install()
     {
-        include(dirname(__FILE__).'/sql/install.php');
+        include dirname(__FILE__) . '/sql/install.php';
 
         Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_API_KEY', '');
         Configuration::updateValue('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE', false);
@@ -67,7 +67,7 @@ class RecommendSimilarProducts extends Module
         $key = $this->uuid();
         Db::getInstance()->execute('
             INSERT INTO ' . _DB_PREFIX_ . 'recommend_similar_products (id_recommend_similar_products)
-            VALUES (\''. $key .'\')
+            VALUES (\'' . $key . '\')
         ');
 
         $this->notification($host, $key, 'prestashop;install');
@@ -92,7 +92,7 @@ class RecommendSimilarProducts extends Module
      */
     public function uninstall()
     {
-        include(dirname(__FILE__).'/sql/uninstall.php');
+        include dirname(__FILE__) . '/sql/uninstall.php';
 
         Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_API_KEY');
         Configuration::deleteByName('RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE');
@@ -109,6 +109,7 @@ class RecommendSimilarProducts extends Module
 
     /**
      * Send notifaction about installation
+     *
      * @param $hosts
      * @param $keys
      * @param $type
@@ -118,13 +119,13 @@ class RecommendSimilarProducts extends Module
         $url = 'https://api.visualsearch.wien/installation_notify';
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Vis-API-KEY: marketing',
-            'Vis-SYSTEM-HOSTS:'.$hosts,
+            'Vis-SYSTEM-HOSTS:' . $hosts,
             'Vis-SYSTEM-KEY:' . $key,
-            'Vis-SYSTEM-TYPE: recommend_similar_products;'.$type,
-            'Content-Type: application/json'
-        ));
+            'Vis-SYSTEM-TYPE: recommend_similar_products;' . $type,
+            'Content-Type: application/json',
+        ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_exec($ch);
         curl_close($ch);
@@ -180,12 +181,12 @@ class RecommendSimilarProducts extends Module
             'UpdateOneCategory'
         );
 
-        /**
+        /*
          * If values have been submitted in the form, process.
          */
-        if (((bool)Tools::isSubmit('submitRecommend_similar_productsModule')) == true) {
+        if (((bool) Tools::isSubmit('submitRecommend_similar_productsModule')) == true) {
             $this->postProcess();
-        } elseif (Tools::isSubmit('submit_api_credentials_'.$this->name)) {
+        } elseif (Tools::isSubmit('submit_api_credentials_' . $this->name)) {
             $this->processApiCredentialsFormFields();
         }
 
@@ -208,7 +209,7 @@ class RecommendSimilarProducts extends Module
             }
         }
 
-        $output .= $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
+        $output .= $this->context->smarty->fetch($this->local_path . 'views/templates/admin/configure.tpl');
         $output .= $this->renderForm();
         $output .= $this->renderApiCredentialsForm();
 
@@ -231,16 +232,16 @@ class RecommendSimilarProducts extends Module
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitRecommend_similar_productsModule';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
-            .'&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+            . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
-        $helper->tpl_vars = array(
+        $helper->tpl_vars = [
             'fields_value' => $this->getConfigFormValues(), /* Add values for your inputs */
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
-        );
+        ];
 
-        return $helper->generateForm(array($this->getConfigForm()));
+        return $helper->generateForm([$this->getConfigForm()]);
     }
 
     /**
@@ -248,38 +249,38 @@ class RecommendSimilarProducts extends Module
      */
     protected function getConfigForm()
     {
-        return array(
-            'form' => array(
-                'legend' => array(
+        return [
+            'form' => [
+                'legend' => [
                 'title' => $this->l('Settings'),
                 'icon' => 'icon-cogs',
-                ),
-                'input' => array(
-                    array(
+                ],
+                'input' => [
+                    [
                         'type' => 'switch',
                         'label' => $this->l('Live mode'),
                         'name' => 'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE',
                         'is_bool' => true,
                         'desc' => $this->l('Use this module in live mode'),
-                        'values' => array(
-                            array(
+                        'values' => [
+                            [
                                 'id' => 'active_on',
                                 'value' => true,
-                                'label' => $this->l('Enabled')
-                            ),
-                            array(
+                                'label' => $this->l('Enabled'),
+                            ],
+                            [
                                 'id' => 'active_off',
                                 'value' => false,
-                                'label' => $this->l('Disabled')
-                            )
-                        ),
-                    ),
-                ),
-                'submit' => array(
+                                'label' => $this->l('Disabled'),
+                            ],
+                        ],
+                    ],
+                ],
+                'submit' => [
                     'title' => $this->l('Save'),
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -287,7 +288,7 @@ class RecommendSimilarProducts extends Module
      */
     protected function getConfigFormValues()
     {
-        return array(
+        return [
             'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE' => Tools::getValue(
                 'RECOMMEND_SIMILAR_PRODUCTS_LIVE_MODE',
                 Configuration::get(
@@ -297,7 +298,7 @@ class RecommendSimilarProducts extends Module
                     $this->context->shop->id
                 )
             ),
-        );
+        ];
     }
 
     /**
@@ -332,17 +333,17 @@ class RecommendSimilarProducts extends Module
         $helper->default_form_language = $this->context->language->id;
         $helper->allow_employee_form_lang = Configuration::get('PS_BO_ALLOW_EMPLOYEE_FORM_LANG', 0);
         $helper->identifier = $this->identifier;
-        $helper->submit_action = 'submit_api_credentials_'.$this->name;
-        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false).
-            '&configure='.$this->name.'&tab_module='.$this->tab.'&module_name='.$this->name;
+        $helper->submit_action = 'submit_api_credentials_' . $this->name;
+        $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) .
+            '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
-        $helper->tpl_vars = array(
+        $helper->tpl_vars = [
             'fields_value' => $this->getApiCredentialsFormFieldsValue(),
             'languages' => $this->context->controller->getLanguages(),
             'id_language' => $this->context->language->id,
-        );
+        ];
 
-        return $helper->generateForm(array($this->getApiCredentialsFormFields()));
+        return $helper->generateForm([$this->getApiCredentialsFormFields()]);
     }
 
     /**
@@ -352,7 +353,7 @@ class RecommendSimilarProducts extends Module
      */
     protected function getApiCredentialsFormFieldsValue()
     {
-        return array(
+        return [
             'RECOMMEND_SIMILAR_PRODUCTS_API_KEY' => Tools::getValue(
                 'RECOMMEND_SIMILAR_PRODUCTS_API_KEY',
                 Configuration::get(
@@ -362,7 +363,7 @@ class RecommendSimilarProducts extends Module
                     $this->context->shop->id
                 )
             ),
-        );
+        ];
     }
 
     /**
@@ -372,34 +373,33 @@ class RecommendSimilarProducts extends Module
      */
     protected function getApiCredentialsFormFields()
     {
-        return array(
-            'form' => array(
-                'legend' => array(
+        return [
+            'form' => [
+                'legend' => [
                 'title' => $this->l('API credentials'),
                 'icon' => 'icon-cogs',
-                ),
-                'input' => array(
-                    array(
+                ],
+                'input' => [
+                    [
                         'type' => 'text',
                         'label' => $this->l('API key'),
                         'name' => 'RECOMMEND_SIMILAR_PRODUCTS_API_KEY',
                         'required' => true,
                         'col' => 3,
-                    ),
-                    array(
+                    ],
+                    [
                         'type' => 'html',
                         'name' => 'RECOMMEND_SIMILAR_PRODUCTS_GET_CREDENTIALS_LINK',
-                        'html_content' =>
-                            '<a href="https://www.visualsearch.at/index.php/credentials/" target="_blank">'.
-                                $this->l('Please click here to get your API credentials').
+                        'html_content' => '<a href="https://www.visualsearch.at/index.php/credentials/" target="_blank">' .
+                                $this->l('Please click here to get your API credentials') .
                             '</a>',
-                    ),
-                ),
-                'submit' => array(
+                    ],
+                ],
+                'submit' => [
                     'title' => $this->l('Validate API credentials'),
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -445,10 +445,10 @@ class RecommendSimilarProducts extends Module
 
         if (is_string($apiKey) && trim($apiKey)) {
             $handle = curl_init();
-            $httpHeader = array(
-                'Vis-API-KEY: '.$apiKey,
+            $httpHeader = [
+                'Vis-API-KEY: ' . $apiKey,
                 'Vis-SOLUTION-TYPE: similar',
-            );
+            ];
 
             curl_setopt($handle, CURLOPT_URL, 'https://api.visualsearch.wien/api_key_verify');
             curl_setopt($handle, CURLOPT_CUSTOMREQUEST, 'POST');
@@ -465,7 +465,7 @@ class RecommendSimilarProducts extends Module
                 return;
             }
 
-            if (isset($data['code']) && ((int)$data['code'] === 200)) {
+            if (isset($data['code']) && ((int) $data['code'] === 200)) {
                 return;
             }
         }
@@ -478,10 +478,10 @@ class RecommendSimilarProducts extends Module
      */
     protected function redirectWithConfirmation()
     {
-        Tools::redirectAdmin($this->getModuleSettingsUrl(array(
+        Tools::redirectAdmin($this->getModuleSettingsUrl([
             'conf' => 6,
             'token' => $this->getToken(),
-        )));
+        ]));
     }
 
     /**
@@ -491,19 +491,19 @@ class RecommendSimilarProducts extends Module
      *
      * @return string
      */
-    protected function getModuleSettingsUrl(array $extraParams = array())
+    protected function getModuleSettingsUrl(array $extraParams = [])
     {
-        $params = array(
+        $params = [
             'configure' => $this->name,
             'tab_module' => $this->tab,
             'module_name' => $this->name,
-        );
+        ];
 
         if ($extraParams) {
             $params = array_merge($params, $extraParams);
         }
 
-        return $this->context->link->getAdminLink('AdminModules', false).'&'.http_build_query($params);
+        return $this->context->link->getAdminLink('AdminModules', false) . '&' . http_build_query($params);
     }
 
     /**
@@ -517,13 +517,13 @@ class RecommendSimilarProducts extends Module
     }
 
     /**
-    * Add the CSS & JavaScript files you want to be loaded in the BO.
-    */
+     * Add the CSS & JavaScript files you want to be loaded in the BO.
+     */
     public function hookBackOfficeHeader()
     {
         if (Tools::getValue('module_name') == $this->name) {
-            $this->context->controller->addJS($this->_path.'views/js/back.js');
-            $this->context->controller->addCSS($this->_path.'views/css/back.css');
+            $this->context->controller->addJS($this->_path . 'views/js/back.js');
+            $this->context->controller->addCSS($this->_path . 'views/css/back.css');
         }
     }
 
@@ -543,10 +543,10 @@ class RecommendSimilarProducts extends Module
         if (Dispatcher::getInstance()->getController() === 'product') {
             if (Tools::isSubmit('rsp') && !$this->isBot()) {
                 $click = new RecommendSimilarProductsClick();
-                $click->id_product = (int)Tools::getValue('id_product');
-                $click->id_product_attribute = (int)Tools::getValue('id_target_attribute');
-                $click->id_source_product = (int)Tools::getValue('id_source_product');
-                $click->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $click->id_product = (int) Tools::getValue('id_product');
+                $click->id_product_attribute = (int) Tools::getValue('id_target_attribute');
+                $click->id_source_product = (int) Tools::getValue('id_source_product');
+                $click->id_customer = $this->context->customer ? (int) $this->context->customer->id : 0;
                 $click->remote_ip_address = $_SERVER['REMOTE_ADDR'];
                 $click->date = date('Y-m-d H:i:s');
 
@@ -563,7 +563,7 @@ class RecommendSimilarProducts extends Module
             }
 
             if (_RSP_PS16_) {
-                $this->context->controller->addJS($this->_path.'/views/js/front16.js');
+                $this->context->controller->addJS($this->_path . '/views/js/front16.js');
             } else {
                 /** @var ProductController $controller */
                 $controller = $this->context->controller;
@@ -593,18 +593,18 @@ class RecommendSimilarProducts extends Module
                     $this->context->smarty->assign('accessories', $accessories);
                 }
 
-                $this->context->controller->addJS($this->_path.'/views/js/front.js');
+                $this->context->controller->addJS($this->_path . '/views/js/front.js');
             }
 
-            $this->context->controller->addCSS($this->_path.'/views/css/front.css');
+            $this->context->controller->addCSS($this->_path . '/views/css/front.css');
 
-            Media::addJsDef(array(
-                $this->name => array(
-                    'id_source_product' => (int)Tools::getValue('id_product'),
+            Media::addJsDef([
+                $this->name => [
+                    'id_source_product' => (int) Tools::getValue('id_product'),
                     'ajax_url' => preg_replace('/\/$/', '', $this->context->link->getBaseLink()) .
-                        '/modules/' . $this->name . '/' . $this->name . '-ajax.php'
-                )
-            ));
+                        '/modules/' . $this->name . '/' . $this->name . '-ajax.php',
+                ],
+            ]);
         }
     }
 
@@ -635,18 +635,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookApiKeyVerifyRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-api_key_verify' => array(
+        return [
+            'module-' . $this->name . '-api_key_verify' => [
                 'controller' => 'ApiKeyVerify',
                 'rule' => 'ApiKeyVerify',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -654,18 +653,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookDeleteCrossRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-delete_cross' => array(
+        return [
+            'module-' . $this->name . '-delete_cross' => [
                 'controller' => 'DeleteCross',
                 'rule' => 'DeleteCross',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -673,18 +671,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookStatusClicksRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-status_clicks' => array(
+        return [
+            'module-' . $this->name . '-status_clicks' => [
                 'controller' => 'StatusClicks',
                 'rule' => 'StatusClicks',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -692,18 +689,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookStatusCrossRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-status_cross' => array(
+        return [
+            'module-' . $this->name . '-status_cross' => [
                 'controller' => 'StatusCross',
                 'rule' => 'StatusCross',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -711,18 +707,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookStatusVersionRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-status_version' => array(
+        return [
+            'module-' . $this->name . '-status_version' => [
                 'controller' => 'StatusVersion',
                 'rule' => 'StatusVersion',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -730,18 +725,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookUpdateCrossRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-update_cross' => array(
+        return [
+            'module-' . $this->name . '-update_cross' => [
                 'controller' => 'UpdateCross',
                 'rule' => 'UpdateCross',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -749,18 +743,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookUpdateAutoRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-update_auto' => array(
+        return [
+            'module-' . $this->name . '-update_auto' => [
                 'controller' => 'UpdateAuto',
                 'rule' => 'UpdateAuto',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -768,18 +761,17 @@ class RecommendSimilarProducts extends Module
      */
     public function hookUpdateCategoriesRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-update_categories' => array(
+        return [
+            'module-' . $this->name . '-update_categories' => [
                 'controller' => 'UpdateCategories',
                 'rule' => 'UpdateCategories',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -787,36 +779,36 @@ class RecommendSimilarProducts extends Module
      */
     public function hookUpdateOneCategoryRoutes()
     {
-        return array(
-
-            'module-'.$this->name.'-update_one_category' => array(
+        return [
+            'module-' . $this->name . '-update_one_category' => [
                 'controller' => 'UpdateOneCategory',
                 'rule' => 'UpdateOneCategory',
-                'keywords' => array(),
-                'params' => array(
+                'keywords' => [],
+                'params' => [
                     'fc' => 'module',
                     'module' => $this->name,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
      * Return Uuid identifier
+     *
      * @return string Uuid
      */
     private function uuid(): string
     {
         return sprintf(
             '%04x%04x%04x%04x%04x%04x%04x%04x',
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0x0fff) | 0x4000,
-            mt_rand(0, 0x3fff) | 0x8000,
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff),
-            mt_rand(0, 0xffff)
+            mt_rand(0, 0xFFFF),
+            mt_rand(0, 0xFFFF),
+            mt_rand(0, 0xFFFF),
+            mt_rand(0, 0x0FFF) | 0x4000,
+            mt_rand(0, 0x3FFF) | 0x8000,
+            mt_rand(0, 0xFFFF),
+            mt_rand(0, 0xFFFF),
+            mt_rand(0, 0xFFFF)
         );
     }
 
@@ -828,7 +820,7 @@ class RecommendSimilarProducts extends Module
         $products = Product::getProducts($this->context->language->id, 0, -1, 'id_product', 'ASC');
 
         foreach ($products as $key => $prod) {
-            if (!Validate::isLoadedObject($product = new Product((int)$key))) {
+            if (!Validate::isLoadedObject($product = new Product((int) $key))) {
                 continue;
             }
 
@@ -841,9 +833,9 @@ class RecommendSimilarProducts extends Module
         switch (Tools::getValue('action')) {
             case 'view':
                 $view = new RecommendSimilarProductsView();
-                $view->id_product = (int)Tools::getValue('id_product');
-                $view->id_product_attribute = (int)Tools::getValue('id_product_attribute');
-                $view->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $view->id_product = (int) Tools::getValue('id_product');
+                $view->id_product_attribute = (int) Tools::getValue('id_product_attribute');
+                $view->id_customer = $this->context->customer ? (int) $this->context->customer->id : 0;
                 $view->date = date('Y-m-d H:i:s');
                 if (!$view->save()) {
                     PrestaShopLogger::addLog(
@@ -859,8 +851,8 @@ class RecommendSimilarProducts extends Module
 
             case 'block_view':
                 $blockView = new RecommendSimilarProductsBlockView();
-                $blockView->id_product = (int)Tools::getValue('id_product');
-                $blockView->id_customer = $this->context->customer ? (int)$this->context->customer->id : 0;
+                $blockView->id_product = (int) Tools::getValue('id_product');
+                $blockView->id_customer = $this->context->customer ? (int) $this->context->customer->id : 0;
                 $blockView->date = date('Y-m-d H:i:s');
                 if (!$blockView->save()) {
                     PrestaShopLogger::addLog(

@@ -1,14 +1,14 @@
 <?php
 /**
  * This file is part of Crawler Detect - the web crawler detection library.
+ *
  * @author (c) Mark Beech <m@rkbee.ch>
  * @copyright (c) Mark Beech <m@rkbee.ch>
  * @license MIT License
  */
-
-require_once dirname(__FILE__).'/../../thirdparty/CrawlerDetect/Fixtures/Crawlers.php';
-require_once dirname(__FILE__).'/../../thirdparty/CrawlerDetect/Fixtures/Exclusions.php';
-require_once dirname(__FILE__).'/../../thirdparty/CrawlerDetect/Fixtures/Headers.php';
+require_once dirname(__FILE__) . '/../../thirdparty/CrawlerDetect/Fixtures/Crawlers.php';
+require_once dirname(__FILE__) . '/../../thirdparty/CrawlerDetect/Fixtures/Exclusions.php';
+require_once dirname(__FILE__) . '/../../thirdparty/CrawlerDetect/Fixtures/Headers.php';
 
 class CrawlerDetect
 {
@@ -24,14 +24,14 @@ class CrawlerDetect
      *
      * @var array
      */
-    protected $httpHeaders = array();
+    protected $httpHeaders = [];
 
     /**
      * Store regex matches.
      *
      * @var array
      */
-    protected $matches = array();
+    protected $matches = [];
 
     /**
      * Crawlers object.
@@ -93,7 +93,7 @@ class CrawlerDetect
      */
     public function compileRegex($patterns)
     {
-        return '('.implode('|', $patterns).')';
+        return '(' . implode('|', $patterns) . ')';
     }
 
     /**
@@ -104,12 +104,12 @@ class CrawlerDetect
     public function setHttpHeaders($httpHeaders)
     {
         // Use global _SERVER if $httpHeaders aren't defined.
-        if (! is_array($httpHeaders) || ! count($httpHeaders)) {
+        if (!is_array($httpHeaders) || !count($httpHeaders)) {
             $httpHeaders = $_SERVER;
         }
 
         // Clear existing headers.
-        $this->httpHeaders = array();
+        $this->httpHeaders = [];
 
         // Only save HTTP headers. In PHP land, that means
         // only _SERVER vars that start with HTTP_.
@@ -140,7 +140,7 @@ class CrawlerDetect
         if (is_null($userAgent)) {
             foreach ($this->getUaHttpHeaders() as $altHeader) {
                 if (isset($this->httpHeaders[$altHeader])) {
-                    $userAgent .= $this->httpHeaders[$altHeader].' ';
+                    $userAgent .= $this->httpHeaders[$altHeader] . ' ';
                 }
             }
         }

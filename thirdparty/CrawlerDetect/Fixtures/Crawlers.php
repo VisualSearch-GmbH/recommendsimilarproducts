@@ -1,12 +1,12 @@
 <?php
 /**
  * This file is part of Crawler Detect - the web crawler detection library.
+ *
  * @author (c) Mark Beech <m@rkbee.ch>
  * @copyright (c) Mark Beech <m@rkbee.ch>
  * @license MIT License
  */
-
-require_once dirname(__FILE__).'/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
+require_once dirname(__FILE__) . '/../../../thirdparty/CrawlerDetect/Fixtures/AbstractProvider.php';
 
 class Crawlers extends AbstractProvider
 {
@@ -15,7 +15,7 @@ class Crawlers extends AbstractProvider
      *
      * @var array
      */
-    protected $data = array(
+    protected $data = [
         ' YLT',
         '^b0t$',
         '^bluefish ',
@@ -405,7 +405,7 @@ class Crawlers extends AbstractProvider
         'flynxapp',
         'forensiq',
         'FoundSeoTool',
-        'http:\/\/www.neomo.de\/', //'Francis [Bot]'
+        'http:\/\/www.neomo.de\/', // 'Francis [Bot]'
         'free thumbnails',
         'Freeuploader',
         'FreshRSS',
@@ -1386,5 +1386,5 @@ class Crawlers extends AbstractProvider
         'ZoteroTranslationServer',
         'ZyBorg',
         '[a-z0-9\-_]*(bot|crawl|archiver|transcoder|spider|uptime|validator|fetcher|cron|checker|reader|extractor|monitoring|analyzer|scraper)',
-    );
+    ];
 }

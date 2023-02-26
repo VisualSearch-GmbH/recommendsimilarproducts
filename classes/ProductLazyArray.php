@@ -3,6 +3,7 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
@@ -10,8 +11,6 @@
 
 namespace RecommendSimilarProducts\PrestaShop;
 
-use Language;
-use Link;
 use PrestaShop\PrestaShop\Adapter\Image\ImageRetriever;
 use PrestaShop\PrestaShop\Adapter\Presenter\Product\ProductLazyArray as LazyArray;
 use PrestaShop\PrestaShop\Adapter\Product\PriceFormatter;
@@ -22,12 +21,12 @@ use Symfony\Component\Translation\TranslatorInterface;
 class ProductLazyArray extends LazyArray
 {
     /**
-     * @var Language
+     * @var \Language
      */
     private $language;
 
     /**
-     * @var Link
+     * @var \Link
      */
     private $link;
 
@@ -39,8 +38,8 @@ class ProductLazyArray extends LazyArray
     public function __construct(
         ProductPresentationSettings $settings,
         array $product,
-        Language $language,
-        Link $link,
+        \Language $language,
+        \Link $link,
         TranslatorInterface $translator
     ) {
         $this->language = $language;
@@ -63,25 +62,25 @@ class ProductLazyArray extends LazyArray
      * {@inheritdoc}
      *
      * @param array $product
-     * @param Language $language
+     * @param \Language $language
      * @param bool $canonical
      *
      * @return string
      */
     private function getProductURL(
         array $product,
-        Language $language,
+        \Language $language,
         $canonical = false
     ) {
         $linkRewrite = isset($product['link_rewrite']) ? $product['link_rewrite'] : null;
         $category = isset($product['category']) ? $product['category'] : null;
         $ean13 = isset($product['ean13']) ? $product['ean13'] : null;
 
-        $extraParams = array(
+        $extraParams = [
             'rsp' => 1,
-            'id_source_product' => (int)\Tools::getValue('id_product'),
-            'id_target_attribute' => (int)$product['id_product_attribute'],
-        );
+            'id_source_product' => (int) \Tools::getValue('id_product'),
+            'id_target_attribute' => (int) $product['id_product_attribute'],
+        ];
 
         return $this->link->getProductLink(
             $product['id_product'],
@@ -128,7 +127,7 @@ class ProductLazyArray extends LazyArray
         $colors = $this->productColorsRetriever->getColoredVariants($this->product['id_product']);
 
         if (!is_array($colors)) {
-            return array();
+            return [];
         }
 
         $lazyArray = $this;

@@ -3,13 +3,13 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
 require_once 'category.php';
-require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontController.php';
+require_once dirname(__FILE__) . '/../../classes/RecommendSimilarProductsFrontController.php';
 
 class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends RecommendSimilarProductsFrontController
 {
@@ -23,11 +23,11 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
         parent::initContent();
 
         if (!$this->checkAuthorization()) {
-            die("Authorization failed");
+            exit('Authorization failed');
         }
 
         if (!$this->isLiveMode()) {
-            die("Not in live mode");
+            exit('Not in live mode');
         }
 
         //
@@ -38,7 +38,7 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
         //
         // Prepare the products for curl request
         //
-        $products_list = array();
+        $products_list = [];
         if (!empty($products)) {
             foreach ($products as $key => $prod) {
                 // Get cover image for your product
@@ -50,7 +50,7 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                 // Categories
                 $categories = Product::getProductCategoriesFull($prod['id_product']);
 
-                $category_list = array();
+                $category_list = [];
                 if (!empty($categories)) {
                     foreach ($categories as $cat) {
                         $category_list[] = $cat['name'];
@@ -73,11 +73,11 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
                 }
             }
         } else {
-            die("No products found");
+            exit('No products found');
         }
 
-        $data = ["products" => $products_list];
-        //echo json_encode($data);
+        $data = ['products' => $products_list];
+        // echo json_encode($data);
 
         //
         // Send curl request
@@ -96,15 +96,15 @@ class RecommendSimilarProductsUpdateCategoriesModuleFrontController extends Reco
         // Setting our options
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
-            'Vis-API-KEY:'.$this->getApiKey(),
-            'Vis-SYSTEM-HOSTS:'.$systemHosts,
-            'Vis-SYSTEM-TYPE:prestashop'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json',
+            'Vis-API-KEY:' . $this->getApiKey(),
+            'Vis-SYSTEM-HOSTS:' . $systemHosts,
+            'Vis-SYSTEM-TYPE:prestashop', ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Get the response
         $response = curl_exec($ch);
         curl_close($ch);
         $response = json_decode($response);
-        die($response->{'message'});
+        exit($response->{'message'});
     }
 }

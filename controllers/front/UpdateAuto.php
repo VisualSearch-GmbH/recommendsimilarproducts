@@ -3,13 +3,13 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
 require_once 'category.php';
-require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontController.php';
+require_once dirname(__FILE__) . '/../../classes/RecommendSimilarProductsFrontController.php';
 
 class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendSimilarProductsFrontController
 {
@@ -23,11 +23,11 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         parent::initContent();
 
         if (!$this->checkAuthorization()) {
-            die("Authorization failed");
+            exit('Authorization failed');
         }
 
         if (!$this->isLiveMode()) {
-            die("Not in live mode");
+            exit('Not in live mode');
         }
 
         //
@@ -40,11 +40,11 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
             $category_ID = getFirstCategory($products);
         }
 
-        //echo "<pre>"; print_r($category_ID); die(" exit...");
+        // echo "<pre>"; print_r($category_ID); die(" exit...");
 
         // related products exist for every product -> no update needed
         if ($category_ID == -1) {
-            die("All products have related products");
+            exit('All products have related products');
         }
 
         if (sizeof($products) > 30000) {
@@ -65,7 +65,7 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         //
         // Prepare the products for curl request
         //
-        $products_list = array();
+        $products_list = [];
         if (!empty($products)) {
             foreach ($products as $key => $prod) {
                 // Get cover image for your product
@@ -77,7 +77,7 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
                 // Categories
                 $categories = Product::getProductCategoriesFull($prod['id_product']);
 
-                $category_list = array();
+                $category_list = [];
 
                 if (!empty($categories)) {
                     foreach ($categories as $cat) {
@@ -101,11 +101,11 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
                 }
             }
         } else {
-            die("No products found");
+            exit('No products found');
         }
 
-        $data = ["products" => $products_list];
-        //echo json_encode($data);
+        $data = ['products' => $products_list];
+        // echo json_encode($data);
 
         //
         // Send curl request
@@ -124,15 +124,15 @@ class RecommendSimilarProductsUpdateAutoModuleFrontController extends RecommendS
         // Setting our options
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $postString);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type:application/json',
-            'Vis-API-KEY:'.$this->getApiKey(),
-            'Vis-SYSTEM-HOSTS:'.$systemHosts,
-            'Vis-SYSTEM-TYPE:prestashop'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json',
+            'Vis-API-KEY:' . $this->getApiKey(),
+            'Vis-SYSTEM-HOSTS:' . $systemHosts,
+            'Vis-SYSTEM-TYPE:prestashop', ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // Get the response
         $response = curl_exec($ch);
         curl_close($ch);
         $response = json_decode($response);
-        die($response->{'message'});
+        exit($response->{'message'});
     }
 }

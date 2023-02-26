@@ -3,12 +3,12 @@
  * (c) VisualSearch GmbH <office@visualsearch.at>
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with the source code.
+ *
  * @author VisualSearch GmbH
  * @copyright VisualSearch GmbH
  * @license MIT License
  */
-
-require_once dirname(__FILE__).'/../../classes/RecommendSimilarProductsFrontController.php';
+require_once dirname(__FILE__) . '/../../classes/RecommendSimilarProductsFrontController.php';
 
 class RecommendSimilarProductsUpdateCrossModuleFrontController extends RecommendSimilarProductsFrontController
 {
@@ -22,11 +22,11 @@ class RecommendSimilarProductsUpdateCrossModuleFrontController extends Recommend
         parent::initContent();
 
         if (!$this->checkAuthorization()) {
-            die("Authorization failed");
+            exit('Authorization failed');
         }
 
         if (!$this->isLiveMode()) {
-            die("Not in live mode");
+            exit('Not in live mode');
         }
 
         $data = json_decode(Tools::file_get_contents('php://input'), true);
@@ -39,7 +39,7 @@ class RecommendSimilarProductsUpdateCrossModuleFrontController extends Recommend
         foreach ($data['products'] as $productId => $relatedProducts) {
             if (!is_array($relatedProducts) ||
                 !count($relatedProducts) ||
-                !Validate::isLoadedObject($product = new Product((int)$productId))) {
+                !Validate::isLoadedObject($product = new Product((int) $productId))) {
                 continue;
             }
 
@@ -47,6 +47,6 @@ class RecommendSimilarProductsUpdateCrossModuleFrontController extends Recommend
             $product->changeAccessories(array_unique($relatedProducts));
         }
 
-        die("Success");
+        exit('Success');
     }
 }
